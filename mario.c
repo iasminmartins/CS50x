@@ -12,7 +12,6 @@ int main(void)
         height = get_int("Height: ");
     }
     while (height < 1);
-
     for (int j = 0; j < height; j++)
     {
         print_spaces(height - j - 1);
