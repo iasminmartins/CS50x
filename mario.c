@@ -13,7 +13,7 @@ int main(void)
     }
     while (height < 1);
 
-    for(int j = 0; j < height; j++)
+    for (int j = 0; j < height; j++)
     {
         print_spaces(height - j - 1);
         print_row(j + 1);
@@ -22,17 +22,17 @@ int main(void)
 
 void print_spaces(int spaces)
 {
-    for(int k = spaces; k > 0; k--)
+    for (int k = spaces; k > 0; k--)
     {
         printf(" ");
     }
 }
 
-void print_row(int length) //sempre definir tipo de variavel na função
+void print_row(int length) // sempre definir tipo de variavel na função
 {
-    for(int i = 0; i < length; i++)
+    for (int i = 0; i < length; i++)
     {
         printf("#");
     }
-     printf("\n");
+    printf("\n");
 }
