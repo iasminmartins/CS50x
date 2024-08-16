@@ -1,5 +1,5 @@
-#include <ctype.h>
 #include <cs50.h>
+#include <ctype.h>
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -50,18 +50,18 @@ int count_words(string text)
     int sum = 0, flag = 0;
     for (int i = 0, len = strlen(text); i < len; i++)
     {
-       if (isalpha(text[i]))
-       {
+        if (isalpha(text[i]))
+        {
             if (flag == 0)
             {
                 sum++;
                 flag = 1;
             }
-       }
-       else if (isspace(text[i]))
-       {
+        }
+        else if (isspace(text[i]))
+        {
             flag = 0;
-       }
+        }
     }
     return sum;
 }
@@ -71,18 +71,18 @@ int count_sentences(string text)
     int sum = 0, flag = 0;
     for (int i = 0, len = strlen(text); i < len; i++)
     {
-       if ((text[i] == '.') || (text[i] == '!') || (text[i] == '?'))
-       {
+        if ((text[i] == '.') || (text[i] == '!') || (text[i] == '?'))
+        {
             if (flag == 0)
             {
                 sum++;
                 flag = 1;
             }
-       }
-       else if (isalpha(text[i]) || isspace(text[i]))
-       {
+        }
+        else if (isalpha(text[i]) || isspace(text[i]))
+        {
             flag = 0;
-       }
+        }
     }
 
     return sum;
