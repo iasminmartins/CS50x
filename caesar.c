@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-//void encrypt(int key, string text);
 char rotate(char c, int n);
 
 int main(int argc, string argv[])
@@ -16,7 +15,6 @@ int main(int argc, string argv[])
     }
 
     string key = argv[1];
-
     for (int i = 0, len = strlen(key); i < len; i++)
     {
         if (!isdigit(key[i]))
@@ -24,14 +22,9 @@ int main(int argc, string argv[])
             printf("Usage: ./caesar key\n");
             return 1;
         }
-        else
-        {
-            return 0;
-        }
     }
 
     int k = atoi(key);
-
     string plaintext = get_string("plaintext:  ");
     printf("ciphertext: ");
 
