@@ -1,5 +1,5 @@
-#include <ctype.h> //toupper(s[i]), isupper, islower
-#include <cs50.h>
+#include <cs50.h> //toupper(s[i]), isupper, islower
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h> //strlen, strcmp
 
