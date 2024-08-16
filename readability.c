@@ -50,7 +50,7 @@ int count_words(string text)
     int sum = 0, flag = 0;
     for (int i = 0, len = strlen(text); i < len; i++)
     {
-       if(isalpha(text[i]))
+       if (isalpha(text[i]))
        {
             if (flag == 0)
             {
@@ -58,7 +58,7 @@ int count_words(string text)
                 flag = 1;
             }
        }
-       else
+       else if (isspace(text[i]))
        {
             flag = 0;
        }
@@ -71,7 +71,7 @@ int count_sentences(string text)
     int sum = 0, flag = 0;
     for (int i = 0, len = strlen(text); i < len; i++)
     {
-       if((text[i] == '.') || (text[i] == '!') || (text[i] == '?'))
+       if ((text[i] == '.') || (text[i] == '!') || (text[i] == '?'))
        {
             if (flag == 0)
             {
@@ -79,9 +79,9 @@ int count_sentences(string text)
                 flag = 1;
             }
        }
-       else
+       else if (isalpha(text[i]) || isspace(text[i]))
        {
-        flag = 0;
+            flag = 0;
        }
     }
 
@@ -92,7 +92,6 @@ int coleman_liau_index(int letters, int words, int sentences)
 {
     float L = (float) letters / words * 100;
     float S = (float) sentences / words * 100;
-    float index = 0.0588 * L - 0.296 * S - 15.8;
-    index = round(index);
+    int index = round(0.0588 * L - 0.296 * S - 15.8);
     return index;
 }
