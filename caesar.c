@@ -1,5 +1,5 @@
-#include <ctype.h>
 #include <cs50.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,6 +40,9 @@ int main(int argc, string argv[])
 
 char rotate(char c, int n)
 {
+    // If true, it calculates the new character by shifting c by n positions, wrapping around using
+    // modulo 26, and then converting back to a character
+
     if (isupper(c))
     {
         return ((c - 'A' + n) % 26) + 'A';
