@@ -71,7 +71,7 @@ bool unique(string key)
         {
             index = c - 'a';
 
-            if(lower_used[index])
+            if (lower_used[index])
             {
                 return false;
             }
@@ -83,7 +83,7 @@ bool unique(string key)
         {
             index = c - 'A';
 
-            if(upper_used[index])
+            if (upper_used[index])
             {
                 return false;
             }
