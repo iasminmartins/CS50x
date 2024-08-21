@@ -65,10 +65,11 @@ bool unique(string key)
     for (int i = 0, len = strlen(key); i < len; i++)
     {
         char c = key[i];
+        int index;
 
-        if (c >= 'a' && c <= 'z')
+        if (islower(c))
         {
-            int index = c - 'a';
+            index = c - 'a';
 
             if(lower_used[index])
             {
@@ -78,9 +79,9 @@ bool unique(string key)
             lower_used[index] = true;
         }
 
-        else if ( c >= 'A' && c <= 'Z')
+        else if (isupper(c))
         {
-            int index = c - 'A';
+            index = c - 'A';
 
             if(upper_used[index])
             {
@@ -94,7 +95,6 @@ bool unique(string key)
 
 char encrypt(char c, string key)
 {
-
     if (isupper(c))
     {
         return toupper(key[c - 'A']);
