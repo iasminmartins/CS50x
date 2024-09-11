@@ -1,0 +1,12 @@
+sort1 uses: bubble sort
+
+How do you know?: because in the best case scenario the time is considerably smaller than in the worst case
+
+sort2 uses: merge sort
+
+How do you know?: because even though the best and worst case scenarios are the same, it has the fastest results when compared to the other sort algorithms
+
+sort3 uses: selection sort
+
+How do you know?: because in the best case scenario it still takes aproximately the same amount of time as the worst, meaning they are in theta O(n^2), like the selection sort algorithm. And also because the amount of time is bigger than in the sort2 algorithm
+
