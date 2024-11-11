@@ -208,7 +208,8 @@ void print_winner(void)
             if (locked[j][i])
             {
                 source = false;
-                break; // Exit the inner for loop and continue with the next iteration of the outer for loop
+                break; // Exit the inner for loop and continue with the next iteration of the outer
+                       // for loop
             }
         }
         if (source)
