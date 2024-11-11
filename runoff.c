@@ -172,11 +172,6 @@ void tabulate(void)
         }
 
     }
-
-    for (int i = 0; i < candidate_count; i++)
-    {
-        printf("Candidato %s tem %i votos.\n", candidates[i].name, candidates[i].votes);
-    }
     return;
 }
 
@@ -187,11 +182,10 @@ bool print_winner(void)
     {
         if (candidates[i].votes > (voter_count / 2))
         {
-            printf("Candidato %s ganhou com %i votos.\n", candidates[i].name, candidates[i].votes);
+            printf("%s\n", candidates[i].name);
             return true;
         }
     }
-    printf("ngm ganhour\n");
     return false;
 }
 
