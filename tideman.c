@@ -208,13 +208,13 @@ void print_winner(void)
             if (locked[j][i])
             {
                 source = false;
-                break;
+                break; // Exit the inner for loop and continue with the next iteration of the outer for loop
             }
         }
         if (source)
         {
             printf("%s\n", candidates[i]);
-            return;
+            return; // Exit the entire print_winner function
         }
     }
 }
