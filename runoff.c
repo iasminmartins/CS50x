@@ -34,7 +34,8 @@ void eliminate(int min);
 
 int main(int argc, string argv[])
 {
-    // Check for invalid usage (ensures the program has at least one argument beyonde the prog name itself)
+    // Check for invalid usage (ensures the program has at least one argument beyonde the prog name
+    // itself)
     if (argc < 2)
     {
         printf("Usage: runoff [candidate ...]\n");
@@ -75,7 +76,8 @@ int main(int argc, string argv[])
             // Record vote, unless it's invalid. The "!" is the logical NOT operator
             // If vote(i, j, name) returns true, the condition !vote(i, j, name) will be false,
             // and the code inside the if block will not execute. If vote(i, j, name) returns false,
-            // the condition !vote(i, j, name) will be true, and the code inside the if block will execute
+            // the condition !vote(i, j, name) will be true, and the code inside the if block will
+            // execute
 
             if (!vote(i, j, name))
             {
@@ -142,7 +144,7 @@ bool vote(int voter, int rank, string name)
         if (strcmp(candidates[i].name, name) == 0)
         {
             preferences[voter][rank] = i;
-            return true;  // Successfully recorded
+            return true; // Successfully recorded
         }
     }
     printf("No match found for candidate name: %s\n", name);
@@ -160,7 +162,7 @@ void tabulate(void)
 
     for (int i = 0; i < voter_count; i++)
     {
-        for(int j = 0; j < candidate_count; j++)
+        for (int j = 0; j < candidate_count; j++)
         {
             int index = preferences[i][j];
 
@@ -170,7 +172,6 @@ void tabulate(void)
                 break;
             }
         }
-
     }
     return;
 }
@@ -195,9 +196,9 @@ int find_min(void)
     int min = voter_count;
     for (int i = 0; i < candidate_count; i++)
     {
-        if(!candidates[i].eliminated)
+        if (!candidates[i].eliminated)
         {
-            if(candidates[i].votes < min)
+            if (candidates[i].votes < min)
             {
                 min = candidates[i].votes;
             }
@@ -211,9 +212,9 @@ bool is_tie(int min)
 {
     for (int i = 0; i < candidate_count; i++)
     {
-         if(!candidates[i].eliminated)
+        if (!candidates[i].eliminated)
         {
-            if(candidates[i].votes != min)
+            if (candidates[i].votes != min)
             {
                 return false;
             }
@@ -228,7 +229,7 @@ void eliminate(int min)
 {
     for (int i = 0; i < candidate_count; i++)
     {
-        if(candidates[i].votes == min)
+        if (candidates[i].votes == min)
         {
             candidates[i].eliminated = true;
         }
