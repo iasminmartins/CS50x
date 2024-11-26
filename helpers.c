@@ -5,14 +5,14 @@
 void grayscale(int height, int width, RGBTRIPLE image[height][width])
 {
     int average = 0;
-     // Iterate through pixels
+    // Iterate through pixels
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width; j++)
         {
             // Calculate average
             average =
-                 round((image[i][j].rgbtRed + image[i][j].rgbtGreen + image[i][j].rgbtBlue) / 3.0);
+                round((image[i][j].rgbtRed + image[i][j].rgbtGreen + image[i][j].rgbtBlue) / 3.0);
 
             // Assign average to color channels
             image[i][j].rgbtRed = average;
@@ -93,18 +93,8 @@ void blur(int height, int width, RGBTRIPLE image[height][width])
 void edges(int height, int width, RGBTRIPLE image[height][width])
 {
     // Kernels
-    int Gx[3][3] =
-    {
-        {-1, 0, 1},
-        {-2, 0, 2},
-        {-1, 0, 1}
-    };
-    int Gy[3][3] =
-    {
-        {-1, -2, -1},
-        { 0,  0,  0},
-        { 1,  2,  1}
-    };
+    int Gx[3][3] = {{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}};
+    int Gy[3][3] = {{-1, -2, -1}, {0, 0, 0}, {1, 2, 1}};
 
     // Copy original image
     RGBTRIPLE copy[height][width];
@@ -156,11 +146,11 @@ void edges(int height, int width, RGBTRIPLE image[height][width])
             int finalBlue = round(sqrt(sumBlueX * sumBlueX + sumBlueY * sumBlueY));
 
             // Cap values at 255
-            image[i][j].rgbtRed = (int)fmin(finalRed, 255);
-            image[i][j].rgbtGreen = (int)fmin(finalGreen, 255);
-            image[i][j].rgbtBlue = (int)fmin(finalBlue, 255);
+            image[i][j].rgbtRed = (int) fmin(finalRed, 255);
+            image[i][j].rgbtGreen = (int) fmin(finalGreen, 255);
+            image[i][j].rgbtBlue = (int) fmin(finalBlue, 255);
         }
     }
-    
+
     return;
 }
