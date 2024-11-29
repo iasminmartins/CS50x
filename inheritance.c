@@ -40,7 +40,7 @@ person *create_family(int generations)
 {
     // TODO: Allocate memory for new person
     person *new_person = malloc(sizeof(person));
-    if(new_person == NULL)
+    if (new_person == NULL)
     {
         printf("Couldn't allocate memory for new person.\n");
         return NULL;
@@ -81,7 +81,7 @@ person *create_family(int generations)
 void free_family(person *p)
 {
     // TODO: Handle base case
-    if(p == NULL)
+    if (p == NULL)
     {
         return;
     }
@@ -112,11 +112,13 @@ void print_family(person *p, int generation)
     // Print person
     if (generation == 0)
     {
-        printf("Child (Generation %i): blood type %c%c\n", generation, p->alleles[0], p->alleles[1]);
+        printf("Child (Generation %i): blood type %c%c\n", generation, p->alleles[0],
+               p->alleles[1]);
     }
     else if (generation == 1)
     {
-        printf("Parent (Generation %i): blood type %c%c\n", generation, p->alleles[0], p->alleles[1]);
+        printf("Parent (Generation %i): blood type %c%c\n", generation, p->alleles[0],
+               p->alleles[1]);
     }
     else
     {
@@ -124,7 +126,8 @@ void print_family(person *p, int generation)
         {
             printf("Great-");
         }
-        printf("Grandparent (Generation %i): blood type %c%c\n", generation, p->alleles[0], p->alleles[1]);
+        printf("Grandparent (Generation %i): blood type %c%c\n", generation, p->alleles[0],
+               p->alleles[1]);
     }
 
     // Print parents of current generation
