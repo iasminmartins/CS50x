@@ -93,7 +93,6 @@ bool load(const char *dictionary)
         unsigned int index = hash(word);
         new_node->next = table[index];
         table[index] = new_node;
-
     }
 
     // Close the dictionary file
