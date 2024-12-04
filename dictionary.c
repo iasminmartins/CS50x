@@ -17,7 +17,9 @@ typedef struct node
 } node;
 
 // TODO: Choose number of buckets in hash table
-const unsigned int N = 26;
+const unsigned int N = 143107;
+
+#define HASH_MULTIPLIER 31
 
 // Hash table
 node *table[N];
@@ -50,7 +52,7 @@ unsigned int hash(const char *word)
     for (int i = 0; word[i] != '\0'; i++)
     {
         // Ensure case insensitivity (tolower) and reduce collisions (prime number)
-        hash_value = (hash_value * 31 + tolower(word[i])) % N;
+        hash_value = (hash_value * HASH_MULTIPLIER + tolower(word[i])) % N;
     }
 
     return hash_value % N; // Ensure bounds
@@ -88,8 +90,10 @@ bool load(const char *dictionary)
 
         // Add word to hash table
         strcpy(new_node->word, word);
-        new_node->next = table[hash(word)];
-        table[hash(word)] = new_node;
+        unsigned int index = hash(word);
+        new_node->next = table[index];
+        table[index] = new_node;
+
     }
 
     // Close the dictionary file
