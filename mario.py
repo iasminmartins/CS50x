@@ -18,8 +18,9 @@ def pyramid(height):
     for i in range(height):
         print(" " * (height - i - 1), end="")  # Print spaces before the hashes
         print("#" * (i + 1), end="")  # Print hashes
-        print("  ", end="") # Double space gap
+        print("  ", end="")  # Double space gap
         print("#" * (i + 1))  # Print hashes
+
 
 # Call main to execute code
 main()
