@@ -3,7 +3,35 @@ import re
 
 def main():
     card_number = get_int("Number: ");
-    print(kind_of_card(card_number))
+    if luhns(card_number):
+        print(kind_of_card(card_number))
+    else:
+        print("INVALID")
+
+
+def luhns(n):
+
+    sum = 0
+    counter = 0
+    # Loop through digits in reverse
+    while n > 0:
+        last_digit = n % 10  # Get last digit
+        n //= 10  # Remove last digit
+
+        # Double every second digit starting from the right
+        if counter % 2 == 1:
+            doubled = last_digit * 2
+            if doubled > 9:
+                sum += doubled - 9
+            else:
+                sum += doubled
+        else:
+            sum += last_digit
+
+        counter += 1
+
+    # Valid if total sum modulo 10 is 0
+    return sum % 10 == 0
 
 
 def kind_of_card(n):
@@ -15,7 +43,7 @@ def kind_of_card(n):
 
     # Convert int to string because 're.match' expects string
     n = str(n)
-    
+
     # Match card number and patterns
     if re.match(visa_pattern, n):
         return "VISA"
