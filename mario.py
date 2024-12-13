@@ -1,5 +1,6 @@
 from cs50 import get_int
 
+
 def main():
     height = 0
     # Ensure valid input
@@ -14,8 +15,8 @@ def pyramid(height):
 
     # Prints a right-aligned pyramid
     for i in range(height):
-        print(" " * (height - i - 1), end="") # Print spaces before the hashes
-        print("#" * (i + 1)) # Print hashes
+        print(" " * (height - i - 1), end="")  # Print spaces before the hashes
+        print("#" * (i + 1))  # Print hashes
 
 
 # Call main to execute code
