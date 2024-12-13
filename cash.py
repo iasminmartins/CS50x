@@ -1,5 +1,6 @@
 from cs50 import get_float
 
+
 def main():
 
     change = -1
@@ -13,7 +14,7 @@ def main():
 
 
 def calculate_coins(n):
-# Calculate minimum number of coins needed
+    # Calculate minimum number of coins needed
 
     # Coin values
     coins = [25, 10, 5, 1]
@@ -24,6 +25,7 @@ def calculate_coins(n):
         n %= coin
 
     return total
+
 
 # Execute program
 main()
