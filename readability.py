@@ -1,5 +1,4 @@
 from cs50 import get_string
-import math
 
 def main():
     text = get_string("Text: ")
@@ -18,7 +17,7 @@ def main():
 
 
 def count_letters(text):
-# Counts alphabetical characters
+    # Counts alphabetical characters
     sum = 0
     for char in text:
         if char.isalpha():
@@ -27,7 +26,7 @@ def count_letters(text):
 
 
 def count_words(text):
-    words = text.split() # Create list of words
+    words = text.split()  # Create list of words
     return len(words)
 
 
@@ -44,7 +43,6 @@ def coleman_liau_index(letters, words, sentences):
     S = (sentences / words) * 100
     index = round(0.0588 * L - 0.296 * S - 15.8)
     return index
-
 
 
 if __name__ == "__main__":
