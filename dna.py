@@ -22,17 +22,16 @@ def main():
 
     # TODO: Read DNA sequence file into a variable
     with open(sequence_filename, "r") as sequence_file:
-        dna_sequence = sequence_file.read() # Read() returns string with all file's characters
+        dna_sequence = sequence_file.read()  # Read() returns string with all file's characters
 
     # TODO: Find longest match of each STR in DNA sequence
     str_names = list(database[0].keys())
     str_names.remove('name')  # 'name' is not STR
-    str_counts = {} # Create dictionary
+    str_counts = {}  # Create dictionary
     for str_name in str_names:
         str_counts[str_name] = longest_match(dna_sequence, str_name)
 
     # TODO: Check database for matching profiles
-
     for person in database:
         match = True
         for str_name in str_names:
