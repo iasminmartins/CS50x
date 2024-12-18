@@ -1,0 +1,16 @@
+If songs.db contains the top 100 songs of one listener from 2018, how would you characterize their audio aura?
+
+I'd characterize their audio aura by computing the average of energy, valence and danceability from the songs in songs.db.
+Then, based on this attributes, I'd say:
+- For energy: A high average would mean the user's aura is more intense and lively while a low average would mean the user's aura is chill, calmer.
+- For valence: A high average would mean the user's aura is happy, while a low would mean the user's aura is melancholic
+- For danceability: A high average of danceability would mean the user's aura is beat-driven, while a low means not beat-driven
+
+
+Hypothesize about why the way you’ve calculated this aura might not be very representative of the listener. What better ways of calculating this aura would you propose?
+
+It might not be very representative because it doesn't take into consideration how often each song is played.
+A song played more times should have a greater impact on the user's aura, as well as a song played less times should have a smaller impact.
+Therefore, I think a better way of calculating this aura would be weighting the songs based on its play count.
+I also think it should incorporate the other attributes already in songs.db, such as tempo or speechiness, into the calculations.
+With that, you can create a more accurate aura for the user.
