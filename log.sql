@@ -1,7 +1,5 @@
 -- Keep a log of any SQL queries you execute as you solve the mystery.
 
-.schema -- to see what are the tables and its attributes
-
 SELECT description -- To know more from the report, you can access the description, since you have the other informations necessary
 FROM crime_scene_reports
 WHERE month = 7
@@ -9,7 +7,6 @@ AND day = 28
 AND year = 2023
 AND street = 'Humphrey Street';
 
-.read log.sql -- to be able to read the description
 
 SELECT name, transcript -- to see the witnesses interviews and also their names
 FROM interviews
@@ -75,78 +72,3 @@ WHERE person_id NOT IN (
 );
 
 SELECT * FROM suspects; -- Just checking, 4 remaining
-
-DELETE FROM suspects -- Remove from suspects number that doesn't appear as caller
-WHERE phone_number NOT IN (
-    SELECT caller
-    FROM phone_calls
-    WHERE year = 2023
-    AND month = 7
-    AND day = 28
-    AND duration < 60
-);
-
-SELECT * FROM suspects; -- Check remaining suspects (2)
-
-SELECT passengers.passport_number
-    FROM passengers
-    JOIN flights ON passengers.flight_id = flights.id
-    WHERE (flights.hour > 10 OR (flights.hour = 10 AND flights.minute > 15))
-    AND flights.year = 2023
-    AND flights.month = 7
-    AND flights.day = 28;
-
--- Get flight info from suspects and delete who didnt take a flight after 10h15
-DELETE FROM suspects
-WHERE passport_number NOT IN (
-    SELECT passengers.passport_number
-    FROM passengers
-    JOIN flights ON passengers.flight_id = flights.id
-    WHERE (flights.hour > 10 OR (flights.hour = 10 AND flights.minute > 15))
-    AND flights.year = 2023
-    AND flights.month = 7
-    AND flights.day = 28
-);
-
-SELECT * FROM suspects; -- Now I know that the thief is person with passport_number 3592750733, as it is the only one with flight after the theft
-
-SELECT id, name, phone_number, passport_number, 'THIEF' AS role -- This is the thief - DIANA!
-FROM people
-WHERE id = (SELECT person_id FROM suspects);
-
--- Because of that, now I can identify the accomplice: PHILIP! The one she called.
-SELECT id, name, phone_number, passport_number, 'ACCOMPLICE' AS role
-FROM people
-WHERE phone_number IN (
-    SELECT receiver
-    FROM phone_calls
-    WHERE year = 2023
-    AND month = 7
-    AND day = 28
-    AND duration < 60
-    AND caller IN (SELECT phone_number FROM suspects)
-);
-
-SELECT * FROM flights
-WHERE year = 2023
-AND month = 7
-AND day = 28
-AND (hour > 10 OR (hour = 10 AND minute > 15));
-
-SELECT * from passengers
-WHERE passport_number = 3592750733;
-
-SELECT * FROM flights
-JOIN passengers ON flights.id = passengers.flight_id
-WHERE passengers.passport_number = 3592750733;
-
-SELECT flights.origin_airport_id, flights.destination_airport_id
-FROM flights
-JOIN passengers ON flights.id = passengers.flight_id
-WHERE flights.year = 2023
-AND flights.month = 7
-AND flights.day = 28
-AND (flights.hour > 10 OR (flights.hour = 10 AND flights.minute > 15))
-AND passengers.passport_number = 3592750733;
-
-SELECT * FROM airports;
