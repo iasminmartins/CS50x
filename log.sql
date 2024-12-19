@@ -89,9 +89,12 @@ WHERE phone_number NOT IN (
 SELECT * FROM suspects; -- Check remaining suspects (2)
 
 SELECT passengers.passport_number
-FROM passengers
-JOIN flights ON passengers.flight_id = flights.id
-WHERE (flights.hour > 10 OR (flights.hour = 10 AND flights.minute > 15));
+    FROM passengers
+    JOIN flights ON passengers.flight_id = flights.id
+    WHERE (flights.hour > 10 OR (flights.hour = 10 AND flights.minute > 15))
+    AND flights.year = 2023
+    AND flights.month = 7
+    AND flights.day = 28;
 
 -- Get flight info from suspects and delete who didnt take a flight after 10h15
 DELETE FROM suspects
@@ -124,6 +127,11 @@ WHERE phone_number IN (
     AND caller IN (SELECT phone_number FROM suspects)
 );
 
+SELECT * FROM flights
+WHERE year = 2023
+AND month = 7
+AND day = 28
+AND (hour > 10 OR (hour = 10 AND minute > 15));
 
 SELECT * from passengers
 WHERE passport_number = 3592750733;
