@@ -33,7 +33,7 @@ INSERT INTO suspects (person_id)
     AND bakery_security_logs.month = 7
     AND bakery_security_logs.day = 28
     AND bakery_security_logs.hour = 10
-    AND bakery_security_logs.minute > 15
+    AND bakery_security_logs.minute >= 15
     AND bakery_security_logs.minute <= 25
     GROUP BY people.id;
 
@@ -53,8 +53,6 @@ SET passport_number = (
 
 SELECT * FROM suspects; -- Check to see if the suspects are stored with attributes
 
-DELETE FROM suspects -- Remove NULL values, just to be safe
-WHERE phone_number IS NULL OR passport_number IS NULL;
 
 DELETE FROM suspects -- Delete from suspects whomever is not associated with this type of transaction
 WHERE person_id NOT IN (
@@ -72,3 +70,63 @@ WHERE person_id NOT IN (
 );
 
 SELECT * FROM suspects; -- Just checking, 4 remaining
+
+DELETE FROM suspects -- Remove from suspects number that doesn't appear as caller
+WHERE phone_number NOT IN (
+    SELECT caller
+    FROM phone_calls
+    WHERE year = 2023
+    AND month = 7
+    AND day = 28
+    AND duration < 60
+);
+
+SELECT * FROM suspects; -- Check remaining suspects (2)
+
+DELETE FROM suspects -- Delete passenger who isn't on the earliest flight of the 29th
+WHERE passport_number NOT IN (
+    SELECT passengers.passport_number
+    FROM passengers
+    JOIN flights ON passengers.flight_id = flights.id
+    WHERE flights.year = 2023
+    AND flights.month = 7
+    AND flights.day = 29
+    AND flights.hour = (SELECT MIN(flights.hour)
+    FROM flights
+    WHERE flights.year = 2023
+    AND flights.month = 7
+    AND flights.day = 29)
+);
+
+SELECT * FROM suspects; -- This is the thief!! The last remaining suspect.
+
+SELECT id, name, phone_number, passport_number, 'THIEF' AS role -- Show information on the thief
+FROM people
+WHERE id = (SELECT person_id FROM suspects);
+
+-- Because of that, now I can identify the accomplice: the one the suspect called.
+SELECT id, name, phone_number, 'ACCOMPLICE' AS role
+FROM people
+WHERE phone_number IN (
+    SELECT receiver
+    FROM phone_calls
+    WHERE year = 2023
+    AND month = 7
+    AND day = 28
+    AND duration < 60
+    AND caller IN (SELECT phone_number FROM suspects)
+);
+
+SELECT flights.origin_airport_id, flights.destination_airport_id -- To find out the origin, but mostly the destination airport
+FROM flights
+JOIN passengers ON flights.id = passengers.flight_id
+WHERE flights.year = 2023
+AND flights.month = 7
+AND flights.day = 29
+AND passengers.passport_number = 5773159633;
+
+
+SELECT city FROM airports WHERE id IN ( -- To find out city suspect escaped to
+    SELECT destination_airport_id
+    FROM flights
+    WHERE destination_airport_id = 4);
