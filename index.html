@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+        <link href="styles.css" rel="stylesheet">
+        <title>Trivia!</title>
+        <script>
+            // TODO: Add code to check answers to questions
+            // Wait for DOM to load
+            document.addEventListener("DOMContentLoaded", function () {
+                // Part 1: Multiple choice
+                let corrects = document.querySelectorAll('button[correct="true"]');
+                let incorrects = document.querySelectorAll('button[correct="false"]');
+
+                 // Correct buttons
+                for (let i = 0; i < corrects.length; i++) {
+                    corrects[i].addEventListener('click', function() {
+                        corrects[i].style.backgroundColor = 'green';
+                        document.getElementById(corrects[i].dataset.feedback).innerHTML = 'Correct!';
+                        document.getElementById(corrects[i].dataset.feedback).style.color = 'green';
+                    });
+                }
+
+                // Incorrect buttons
+                for (let i = 0; i < incorrects.length; i++) {
+                    incorrects[i].addEventListener('click', function() {
+                        incorrects[i].style.backgroundColor = 'red';
+                        document.getElementById(incorrects[i].dataset.feedback).innerHTML = 'Incorrect';
+                        document.getElementById(incorrects[i].dataset.feedback).style.color = 'red';
+                    });
+                }
+
+                // Part 2: Free response
+                document.querySelector('#submit').addEventListener('click', function() {
+                    let input = document.querySelector('#response');
+                    let response = document.getElementById('free-response');
+
+                    // For case-insensitivity:
+                    let userAnswer = input.value.trim().toLowerCase();
+                    let correctAnswer = 'cricket';
+
+                    // Correct answer
+                    if (userAnswer === correctAnswer) {
+                        input.style.backgroundColor = 'green';
+                        response.innerHTML = 'Correct!';
+                        response.style.color = 'green';
+                    } else {
+                        input.style.backgroundColor = 'red';
+                        response.innerHTML = 'Incorrect';
+                        response.style.color = 'red';
+                    }
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div class="header">
+            <h1>Trivia!</h1>
+        </div>
+
+        <div class="container">
+            <div class="section">
+                <h2>Part 1: Multiple Choice</h2>
+                <hr>
+                <!-- TODO: Add multiple choice question here -->
+                <h3>Which country is the most visited?</h3>
+                <button class="choice" correct="false" data-feedback="multiple-choice-1">USA</button>
+                <button class="choice" correct="false" data-feedback="multiple-choice-1">Spain</button>
+                <button class="choice" correct="true" data-feedback="multiple-choice-1">France</button>
+                <p id="multiple-choice-1"></p>
+            </div>
+
+            <div class="section">
+                <h2>Part 2: Free Response</h2>
+                <hr>
+                <!-- TODO: Add free response question here -->
+                <h3>What sport is also the name of an insect?</h3>
+                <input type="text" id="response">
+                <button id="submit">Submit</button>
+                <p id="free-response"></p>
+            </div>
+
+            <div class="section">
+                <h2>Part 3: Multiple Choice</h2>
+                <hr>
+                <h3>The name Machu Picchu means:</h3>
+                <button class="choice" correct="false" data-feedback="multiple-choice-2">Beautiful Mountain</button>
+                <button class="choice" correct="false" data-feedback="multiple-choice-2">Temple of the Sun</button>
+                <button class="choice" correct="true" data-feedback="multiple-choice-2">Old Peak</button>
+                <p id="multiple-choice-2"></p>
+            </div>
+        </div>
+    </body>
+</html>
