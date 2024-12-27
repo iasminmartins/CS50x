@@ -1,0 +1,150 @@
+body {
+    font-family: 'Raleway', sans-serif;
+    background: linear-gradient(135deg, #FAD0C4, #F7D6E0, #BFD3C1);
+    color: #4D4D4D;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+/* Fun jumbotron with pastel and bold colors */
+.jumbotron {
+    background: linear-gradient(135deg, #FFC3E0, #B7C7D7);
+    color: #5D3F6B;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    padding: 2rem 3rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 2rem auto;
+    max-width: 900px;
+}
+
+.jumbotron h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.jumbotron p {
+    font-size: 1.5rem;
+    font-style: italic;
+}
+
+/* Navbar with a pastel background and playful buttons */
+.navbar {
+    background-color: #FDCB82;
+    border-radius: 20px;
+    padding: 1rem 2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Navbar brand - Fun World */
+.navbar-brand {
+    font-family: 'Pacifico', cursive;
+    font-size: 2rem; /* Larger font for a more eye-catching look */
+    color: #FDCB82 !important; /* Soft pastel pink color with !important */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2), 0 0 25px rgba(255, 182, 193, 0.7); /* Soft glow effect */
+    letter-spacing: 2px; /* Add some spacing between letters */
+    font-weight: bold; /* Make it stand out */
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+/* Hover effect for navbar brand */
+.navbar-brand:hover {
+    color: #FFC3E0 !important; /* Lighter pink color on hover */
+    text-shadow: 2px 2px 10px rgba(255, 182, 193, 0.8), 0 0 30px rgba(255, 182, 193, 0.9); /* Glow effect on hover */
+}
+
+.navbar-nav .nav-link {
+    color: #5D3F6B;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-right: 1rem;
+    text-transform: uppercase;
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #FFC3E0;
+    text-decoration: underline;
+}
+
+.navbar-nav .nav-item.active .nav-link {
+    color: #FFC3E0 !important;
+    font-weight: bold;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    text-decoration: underline;
+}
+
+/* Interactive button */
+button {
+    background-color: #FDCB82 !important;
+    border: none;
+    color: white;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: transform 0.3s, background-color 0.3s ease;
+}
+
+button:hover, button:focus {
+    background-color: #FFC3E0;
+    transform: scale(1.1);
+    outline: none;
+}
+
+/* Footer with pastel background */
+footer {
+    background-color: #B7C7D7;
+    color: #5D3F6B;
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 1.2rem;
+    border-top: 5px solid #F7B7A3;
+    margin-top: 2rem;
+}
+
+/* Custom links with smooth hover effect */
+a {
+    color: #5D3F6B;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: color 0.3s, transform 0.3s;
+}
+
+a:hover {
+    color: #FDCB82;
+    transform: scale(1.1);
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    .jumbotron {
+        padding: 1.5rem 2rem;
+    }
+
+    .navbar {
+        padding: 0.5rem 1rem;
+    }
+
+    .navbar-nav .nav-link {
+        font-size: 1rem;
+    }
+
+    .jumbotron h1 {
+        font-size: 2.5rem;
+    }
+}
+
+.fun-world-image {
+    width: 60%; /* Adjust width */
+    max-width: 400px; /* Maximum size */
+    height: auto; /* Maintain aspect ratio */
+    margin: 2rem auto; /* Space around the image, centering it */
+    border-radius: 15px; /* Optional, for rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional, for shadow effect */
+    display: block; /* Makes the image a block element */
+}

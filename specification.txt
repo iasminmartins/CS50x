@@ -1,0 +1,41 @@
+HTML tags used:
+
+<html>
+<head>
+<body>
+<div>
+<h1>
+<p>
+<nav>
+<ul>
+<li>
+<button>
+<a>
+<footer>
+<img>
+
+CSS properties used:
+
+background
+color
+font-family
+font-size
+text-shadow
+padding
+margin
+box-shadow
+border-radius
+text-transform
+letter-spacing
+transition
+width
+height
+text-decoration
+
+JavaScript usage:
+
+JavaScript was used on this webpage to enhance interactivity, such as enabling button clicks and displaying dynamic messages.
+
+Bootstrap usage:
+
+Bootstrap was utilized to design a responsive navigation bar and ensure the webpage adapts to different screen sizes, like mobile devices.
