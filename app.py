@@ -131,7 +131,7 @@ def buy():
             VALUES (?, ?, ?, ?, CURRENT_DATE)
         """, user_id, stock["symbol"], shares, stock["price"])
 
-        flash("Successful buy!")
+        flash(f"Transaction completed successfully! {shares} shares of {symbol} were bought!")
 
         return redirect("/")
 
