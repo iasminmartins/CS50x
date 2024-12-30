@@ -97,17 +97,14 @@ def buy():
         return render_template("buy.html")
 
     else:
-        # Get symbol and validate
         symbol = request.form.get("symbol").upper().strip()
         if not symbol:
             return apology("Must provide stock symbol", 400)
 
-        # Lookup stock and validate
         stock = lookup(symbol)
         if stock is None:
             return apology("Invalid stock symbol", 400)
 
-        # Get shares and validate
         shares = request.form.get("shares")
         if not shares or not shares.isdigit() or int(shares) <= 0:
             return apology("Must provide a positive number of shares", 400)
@@ -115,37 +112,33 @@ def buy():
         shares = int(shares)
         price = stock["price"]
         total_cost = price * shares
+        app.logger.debug(f"Total cost: {total_cost}")
 
-        # Get user's current cash balance
         user_id = session["user_id"]
         user_cash = db.execute("SELECT cash FROM users WHERE id = ?", user_id)
 
-        if not user or "cash" not in user[0]:
-            return apology("User not found or invalid data", 500)
+        if not user_cash or "cash" not in user_cash[0] or len(user_cash) != 1:
+            return apology("Could not retrieve cash balance", 500)
 
-        #if len(user_cash) != 1:
-          #  return apology("Could not retrieve cash balance", 500)
+        app.logger.debug(f"User cash before purchase: {user_cash}")
 
         user_cash = user_cash[0]["cash"]
 
-        # Check if the user has enough cash
         if total_cost > user_cash:
             return apology("Not enough cash", 400)
 
         try:
-            # Deduct cash
+            db.execute("BEGIN TRANSACTION;")
             db.execute("UPDATE users SET cash = cash - ? WHERE id = ?", total_cost, user_id)
-
-            # Record transaction
             db.execute("INSERT INTO transactions (user_id, symbol, shares, price) VALUES (?, ?, ?, ?)",
-                       user_id, symbol, shares, price)
-
+                    user_id, symbol, shares, price)
+            db.execute("COMMIT;")
             flash(f"Successfully purchased {shares} share(s) of {symbol}!")
         except Exception as e:
+            db.execute("ROLLBACK;")
             app.logger.error(f"Error processing transaction: {str(e)}")
             return apology(f"Error processing transaction: {str(e)}", 500)
 
-        # Redirect to the portfolio
         return redirect("/")
 
 
