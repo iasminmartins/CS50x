@@ -310,12 +310,12 @@ def sell():
         user_cash_query = db.execute("SELECT cash FROM users WHERE id = ?", user_id)
         user_cash = user_cash_query[0]["cash"]
 
-        user_shares = db.execute("SELECT shares FROM transactions WHERE id = ? AND symbol = ? GROUP BY symbol", user_id, symbol)
+        user_shares = db.execute("SELECT shares FROM transactions WHERE user_id = ? AND symbol = ? GROUP BY symbol", user_id, symbol)
         user_shares_real = user_shares[0]["shares"]
 
         if shares > user_shares_real:
             return apology("Invalid amount of shares")
-        
+
         update_cash = user_cash + total_cost
         db.execute("UPDATE users SET cash = ? WHERE id = ?", update_cash, user_id)
 
