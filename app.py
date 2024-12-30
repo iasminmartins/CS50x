@@ -117,12 +117,12 @@ def buy():
         user_id = session["user_id"]
         user_cash = db.execute("SELECT cash FROM users WHERE id = ?", user_id)
 
-        if not user_cash or "cash" not in user_cash[0] or len(user_cash) != 1:
+        if not user_cash or "cash" not in user[0] or len(user_cash) != 1:
             return apology("Could not retrieve cash balance", 500)
 
         app.logger.debug(f"User cash before purchase: {user_cash}")
 
-        user_cash = user_cash[0]["cash"]
+        user_cash = user[0]["cash"]
 
         if total_cost > user_cash:
             return apology("Not enough cash", 400)
