@@ -21,10 +21,10 @@
         <tbody>
             {% for stock in stock_data %}
                 <tr>
-                    <td>{{ stock.get("symbol", "N/A") }}</td>
-                    <td>{{ stock.get("shares", 0) }}</td>
-                    <td>{{ stock.get("price", 0.00) }}</td>
-                    <td>{{ stock.get("shares", 0) * stock.get("price", 0.00) }}</td>
+                    <td>{{ symbol }}</td>
+                    <td>{{ shares }}</td>
+                    <td>{{ orice }}</td>
+                    <td>{{ total_value }}</td>
                 </tr>
             {% endfor %}
         </tbody>
