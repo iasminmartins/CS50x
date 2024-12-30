@@ -60,7 +60,7 @@ def index():
     # Fetch real-time stock prices and calculate totals
     for stock in stocks:
         symbol = stock["symbol"]
-        total_shares = stock["total_shares"]
+        total_shares = stock["shares"]
 
         stock_info = lookup(symbol)
         if not stock_info:
