@@ -15,7 +15,7 @@
                     <th>Transaction</th>
                     <th>Shares</th>
                     <th>Price</th>
-                    <th>Date</th>
+                    <th>Date & Time</th>
                 </tr>
             </thead>
             <tbody>
@@ -24,14 +24,13 @@
                         <td>{{ transaction.symbol }}</td>
                         <td>
                             {% if transaction.shares > 0 %}
-                                Bought
+                                +{{ transaction.shares }}
                             {% else %}
-                                Sold
+                                {{ transaction.shares }}
                             {% endif %}
                         </td>
-                        <td>{{ transaction.shares | abs }}</td>
-                        <td>${{ transaction.price }}</td>
-                        <td>{{ transaction.date }}</td>  <!-- Use 'time' or 'timestamp' based on your field name -->
+                        <td>${{ transaction.price | usd }}</td>
+                        <td>{{ transaction.transaction_date }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

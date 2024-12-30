@@ -146,11 +146,11 @@ def history():
     user_id = session["user_id"]
 
     transactions = db.execute("""
-        SELECT symbol, shares, price, time
+        SELECT symbol, shares, price, transaction_date
         FROM transactions
-        WHERE user_id = :user_id
-        ORDER BY time DESC
-    """, user_id=user_id)
+        WHERE user_id = ?
+        ORDER BY transaction_date DESC
+    """, user_id)
 
     return render_template("history.html", transactions=transactions)
 
