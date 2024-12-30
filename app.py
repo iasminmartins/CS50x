@@ -145,8 +145,19 @@ def buy():
             app.logger.error(f"Error processing transaction: {str(e)}")
             return apology(f"Error processing transaction: {str(e)}", 500)
 
-        # Redirect the user to the home page
-        return redirect("/")
+        # Retrieve updated portfolio data, including the purchased stock
+        portfolio_data = db.execute("""
+            SELECT symbol, SUM(shares) as shares, price
+            FROM purchases
+            JOIN stocks ON stocks.symbol = purchases.symbol
+            WHERE user_id = ?
+            GROUP BY symbol
+        """, user_id)
+
+        grand_total = sum([stock["shares"] * stock["price"] for stock in portfolio_data])
+
+        # Pass the portfolio data and grand total to the index template
+        return render_template("index.html", stock_data=portfolio_data, grand_total=grand_total)
 
 
 @app.route("/history")
