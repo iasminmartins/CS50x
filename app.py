@@ -125,13 +125,15 @@ def buy():
         update_cash = user_cash - total_cost
         db.execute("UPDATE users SET cash = ? WHERE id = ?", update_cash, user_id)
 
-        db.execute("INSERT INTO transactions (user_id, symbol, shares, price, transaction_date) VALUES (?, ?, ?, ?, CURRENT_DATE)",
-                       user_id, stock["symbol"], shares, stock["price"])
+        # Insert into the transactions table with the CURRENT_DATE for transaction_date
+        db.execute("""
+            INSERT INTO transactions (user_id, symbol, shares, price, transaction_date)
+            VALUES (?, ?, ?, ?, CURRENT_DATE)
+        """, user_id, stock["symbol"], shares, stock["price"])
 
         flash("Successful buy!")
 
         return redirect("/")
-
 
 @app.route("/history")
 @login_required
