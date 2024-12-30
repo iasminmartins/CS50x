@@ -45,20 +45,48 @@ def index():
 
     user_cash = cash_query[0]["cash"]
 
-    stock_data = db.execute("""
-            SELECT symbol, SUM(shares) AS shares, price
-            FROM transactions
-            WHERE user_id = ?
-            GROUP BY symbol
-        """, user_id)
+    # Query the user's stock portfolio
+    stocks = db.execute("""
+        SELECT symbol, SUM(shares) AS total_shares
+        FROM transactions
+        WHERE user_id = ?
+        GROUP BY symbol
+        HAVING total_shares > 0
+    """, user_id)  # Filter out stocks where total_shares <= 0
 
-        # Calculate the total value of the portfolio
-        grand_total = user_cash
-        for stock in stock_data:
-            stock["total_value"] = stock["shares"] * stock["price"]
-            grand_total += stock["total_value"]
+    stock_data = []
+    grand_total = user_cash
 
-        return render_template("index.html", cash=user_cash, stock_data=stock_data, grand_total=grand_total)
+    # Fetch real-time stock prices and calculate totals
+    for stock in stocks:
+        symbol = stock["symbol"]
+        total_shares = stock["total_shares"]
+
+        stock_info = lookup(symbol)
+        if not stock_info:
+            return apology(f"Could not fetch data for symbol {symbol}", 400)
+
+        price = stock_info["price"]
+        total_value = total_shares * price
+
+        # Add stock details to the portfolio data
+        stock_data.append({
+            "symbol": symbol,
+            "shares": total_shares,
+            "price": price,
+            "total_value": total_value
+        })
+
+        # Update the grand total with the stock's current value
+        grand_total += total_value
+
+    return render_template(
+        "index.html",
+        stock_data=stock_data,
+        cash=user_cash,
+        grand_total=grand_total
+    )
+
 
 @app.route("/buy", methods=["GET", "POST"])
 @login_required
