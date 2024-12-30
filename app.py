@@ -104,7 +104,8 @@ def buy():
         if not symbol:
             return apology("Must provide stock symbol")
 
-        stock = lookup(symbol)
+        stock = lookup(symbol.upper())
+
         if stock is None:
             return apology("Invalid stock symbol")
 
@@ -127,7 +128,7 @@ def buy():
         # Insert into the transactions table with the CURRENT_DATE for transaction_date
         db.execute("""
             INSERT INTO transactions (user_id, symbol, shares, price, transaction_date)
-            VALUES (?, ?, ?, ?, CURRENT_DATE)
+            VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
         """, user_id, stock["symbol"], shares, stock["price"])
 
         flash(f"Transaction completed successfully! {shares} shares of {symbol} were bought!")
