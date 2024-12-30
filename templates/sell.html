@@ -13,7 +13,7 @@
             <select name="symbol" id="symbol">
                 <option value="">Select stock</option>
                 {% for stock in stocks %}
-                    <option value="{{ stock.symbol }}">{{ stock.symbol }} ({{ stock.total_shares | format('%.2f') }} shares)</option>
+                    <option value="{{ stock.symbol }}">{{ stock.symbol }} ({{ stock.total_shares }} shares)</option>
                 {% endfor %}
             </select>
         </div>
