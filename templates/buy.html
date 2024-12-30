@@ -7,17 +7,6 @@
 {% block main %}
     <h2>Buy Stock</h2>
 
-    <!-- Display Flash Messages for Errors or Success -->
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul class="alert alert-danger">
-                {% for message in messages %}
-                    <li>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
-
     <form action="/buy" method="post">
         <div class="mb-3">
             <label for="symbol" class="form-label">Stock Symbol</label>
