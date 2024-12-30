@@ -91,7 +91,7 @@ def buy():
             return apology("invalid symbol", 400)
 
         shares = request.form.get("shares")
-        if not shares.isdigit() or int(shares) <= 0:
+        if not shares or not shares.isdigit() or int(shares) <= 0:
             return apology("must provide a positive number of shares", 400)
 
         shares = int(shares)
@@ -100,7 +100,10 @@ def buy():
 
         # User's current cash balance
         user_id = session["user_id"]
-        user_cash = db.execute("SELECT cash FROM users WHERE id = ?", user_id)[0]["cash"]
+        user_cash = db.execute("SELECT cash FROM users WHERE id = ?", user_id)
+        if len(user_cash) != 1:
+            return apology("Could not retrieve cash balance", 500)
+        user_cash = user_cash[0]["cash"]
 
         if total_cost > user_cash:
             return apology("you cannot afford that purchase", 400)
