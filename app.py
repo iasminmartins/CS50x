@@ -129,24 +129,19 @@ def buy():
         if total_cost > user_cash:
             return apology("Not enough cash", 400)
 
-        # Start a transaction to process the purchase
         try:
             # Deduct cash from the user's balance
-            db.execute("BEGIN TRANSACTION;")
             db.execute("UPDATE users SET cash = cash - ? WHERE id = ?", total_cost, user_id)
 
             # Add the purchase to the purchases table
             db.execute("INSERT INTO purchases (user_id, symbol, shares, price, total_cost) VALUES (?, ?, ?, ?, ?)",
                     user_id, symbol, shares, price, total_cost)
 
-            # Commit the transaction
-            db.execute("COMMIT;")
-
             # Flash a success message
             flash(f"Successfully purchased {shares} share(s) of {symbol} for ${total_cost:.2f}!")
 
         except Exception as e:
-            db.execute("ROLLBACK;")
+            # Log the error and show an apology message
             app.logger.error(f"Error processing transaction: {str(e)}")
             return apology(f"Error processing transaction: {str(e)}", 500)
 
