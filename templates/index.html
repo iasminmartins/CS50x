@@ -7,7 +7,7 @@
 {% block main %}
     <h2>Your Portfolio</h2>
 
-    <h4>Cash: ${{ cash  | usd }}</h4>
+    <h4>Cash: {{ cash  | usd }}</h4>
 
     <table class="table">
         <thead>
@@ -23,12 +23,12 @@
                 <tr>
                     <td>{{ stock.symbol }}</td>
                     <td>{{ stock.shares }}</td>
-                    <td>${{ stock.price | usd }}</td>
-                    <td>${{ stock.total_value | usd }}</td>
+                    <td>{{ stock.price | usd }}</td>
+                    <td>{{ stock.total_value | usd }}</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    <h4>Grand Total: ${{ grand_total | usd }}</h4>
+    <h4>Grand Total: {{ grand_total | usd }}</h4>
 {% endblock %}
