@@ -82,9 +82,9 @@ def index():
 
     return render_template(
         "index.html",
-        stock_data,
-        user_cash,
-        grand_total
+        stock_data=stock_data,
+        cash=user_cash,
+        grand_total=grand_total
     )
 
 
