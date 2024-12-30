@@ -88,6 +88,72 @@ def index():
     )
 
 
+@app.route("/buy", methods=["GET", "POST"])
+@login_required
+def buy():
+    """Buy shares of stock"""
+
+    if request.method == "GET":
+        return render_template("buy.html")
+
+    else:
+        # Get the stock symbol and validate it
+        symbol = request.form.get("symbol").upper().strip()
+        if not symbol:
+            return apology("Must provide stock symbol", 400)
+
+        # Look up the stock's data
+        stock = lookup(symbol)
+        if stock is None:
+            return apology("Invalid stock symbol", 400)
+
+        # Get the number of shares to buy
+        shares = request.form.get("shares")
+        if not shares or not shares.isdigit() or int(shares) <= 0:
+            return apology("Must provide a positive number of shares", 400)
+
+        shares = int(shares)
+        price = stock["price"]
+        total_cost = price * shares
+
+        # Get the current user's cash balance
+        user_id = session["user_id"]
+        user_cash_query = db.execute("SELECT cash FROM users WHERE id = ?", user_id)
+
+        if not user_cash_query or len(user_cash_query) != 1:
+            return apology("Could not retrieve cash balance", 500)
+
+        user_cash = user_cash_query[0]["cash"]
+
+        # Check if the user has enough cash
+        if total_cost > user_cash:
+            return apology("Not enough cash", 400)
+
+        # Start a transaction to process the purchase
+        try:
+            # Deduct cash from the user's balance
+            db.execute("BEGIN TRANSACTION;")
+            db.execute("UPDATE users SET cash = cash - ? WHERE id = ?", total_cost, user_id)
+
+            # Add the purchase to the purchases table
+            db.execute("INSERT INTO purchases (user_id, symbol, shares, price, total_cost) VALUES (?, ?, ?, ?, ?)",
+                    user_id, symbol, shares, price, total_cost)
+
+            # Commit the transaction
+            db.execute("COMMIT;")
+
+            # Flash a success message
+            flash(f"Successfully purchased {shares} share(s) of {symbol} for ${total_cost:.2f}!")
+
+        except Exception as e:
+            db.execute("ROLLBACK;")
+            app.logger.error(f"Error processing transaction: {str(e)}")
+            return apology(f"Error processing transaction: {str(e)}", 500)
+
+        # Redirect the user to the home page
+        return redirect("/")
+
+
 @app.route("/history")
 @login_required
 def history():
