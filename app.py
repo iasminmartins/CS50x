@@ -96,7 +96,8 @@ def buy():
         return render_template("buy.html")
 
     else:
-        symbol = request.form.get("symbol").upper().strip()
+        symbol = request.form.get("symbol")
+        shares = int(request.form.get("shares"))
         if not symbol:
             return apology("Must provide stock symbol", 400)
 
@@ -104,47 +105,29 @@ def buy():
         if stock is None:
             return apology("Invalid stock symbol", 400)
 
-        # Log the stock data to debug
-        app.logger.debug(f"Stock data: {stock}")
-
-        shares = request.form.get("shares")
-        if not shares or not shares.isdigit() or int(shares) <= 0:
+        if shares < 0:
             return apology("Must provide a positive number of shares", 400)
 
-        # Log the shares input
-        app.logger.debug(f"Shares: {shares}")
-
-        shares = int(shares)
-        price = stock["price"]
-        total_cost = price * shares
-
-        # Log the total cost calculation
-        app.logger.debug(f"Total cost: {total_cost}")
+        total_cost = shares * stock["price"]
 
         user_id = session["user_id"]
-        user_cash_query = db.execute("SELECT cash FROM users WHERE id = ?", user_id)
-
-        if not user_cash_query or len(user_cash_query) != 1:
-            return apology("Could not retrieve cash balance", 500)
+        user_cash_query = db.execute("SELECT cash FROM users WHERE id = ?", id=user_id)
 
         user_cash = user_cash_query[0]["cash"]
-        app.logger.debug(f"User cash before purchase: {user_cash}")
 
         if total_cost > user_cash:
             return apology("Not enough cash", 400)
 
-        # Make the purchase
-        try:
-            db.execute("UPDATE users SET cash = cash - ? WHERE id = ?", total_cost, user_id)
-            db.execute("INSERT INTO transactions (user_id, symbol, shares, price) VALUES (?, ?, ?, ?)",
-                       user_id, symbol, shares, price)
-            flash(f"Successfully purchased {shares} share(s) of {symbol} at ${price} each!")
-        except Exception as e:
-            app.logger.error(f"Error processing transaction: {str(e)}")
-            return apology(f"Error processing transaction: {str(e)}", 500)
+        update_cash = user_cash - total_cost
+        db.execute("UPDATE users SET cash = ? WHERE id = ?", user_id)
 
-        # Redirect to the home page
+        db.execute("INSERT INTO transactions (user_id, symbol, shares, price, transaction_date) VALUES (?, ?, ?, ?, CURRENT_DATE)",
+                       user_id, stock["symbol"], shares, stock["price"])
+
+        flash("Successful buy!")
+        
         return redirect("/")
+
 
 @app.route("/history")
 @login_required
