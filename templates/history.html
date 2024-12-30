@@ -31,7 +31,7 @@
                         </td>
                         <td>{{ transaction.shares | abs }}</td>
                         <td>${{ transaction.price }}</td>
-                        <td>{{ transaction.timestamp }}</td>
+                        <td>{{ transaction.time }}</td>  <!-- Use 'time' or 'timestamp' based on your field name -->
                     </tr>
                 {% endfor %}
             </tbody>

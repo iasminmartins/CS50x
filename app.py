@@ -115,7 +115,8 @@ def buy():
             db.execute("UPDATE users SET cash = cash - ? WHERE id = ?", total_cost, user_id)
 
             # Record transaction
-            db.execute("INSERT INTO transactions (user_id, symbol, shares, price) VALUES (?, ?, ?, ?)", user_id, symbol, shares, price)
+            db.execute("INSERT INTO transactions (user_id, symbol, shares, price) VALUES (?, ?, ?, ?)",
+                       user_id, symbol, shares, price)
 
         except Exception as e:
             return apology(f"Error processing transaction: {str(e)}", 500)
