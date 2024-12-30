@@ -97,13 +97,17 @@ def buy():
 
     else:
         symbol = request.form.get("symbol")
-        shares = int(request.form.get("shares"))
+        try:
+            shares = int(request.form.get("shares"))
+        except ValueError:
+            return apology("Shares must be a number")
+
         if not symbol:
-            return apology("Must provide stock symbol", 400)
+            return apology("Must provide stock symbol")
 
         stock = lookup(symbol)
         if stock is None:
-            return apology("Invalid stock symbol", 400)
+            return apology("Invalid stock symbol")
 
         if shares < 0:
             return apology("Must provide a positive number of shares", 400)
@@ -111,12 +115,12 @@ def buy():
         total_cost = shares * stock["price"]
 
         user_id = session["user_id"]
-        user_cash_query = db.execute("SELECT cash FROM users WHERE id = ?", id=user_id)
+        user_cash_query = db.execute("SELECT cash FROM users WHERE id = ?", user_id)
 
         user_cash = user_cash_query[0]["cash"]
 
         if total_cost > user_cash:
-            return apology("Not enough cash", 400)
+            return apology("Not enough cash")
 
         update_cash = user_cash - total_cost
         db.execute("UPDATE users SET cash = ? WHERE id = ?", update_cash, user_id)
@@ -207,12 +211,12 @@ def quote():
     else:
         symbol = request.form.get("symbol")
         if not symbol:
-            return apology("must provide symbol", 400)
+            return apology("must provide symbol")
 
         # Look up stock
         stock = lookup(symbol)
         if stock is None:
-            return apology("invalid symbol", 400)
+            return apology("invalid symbol")
 
         # If stock found
         return render_template("quoted.html", stock=stock)
@@ -225,18 +229,18 @@ def register():
     if request.method == "POST":
         username = request.form.get("username")
         if not username:
-            return apology("must provide username", 400)
+            return apology("must provide username")
 
         password = request.form.get("password")
         if not password:
-            return apology("must provide password", 400)
+            return apology("must provide password")
 
         confirmation = request.form.get("confirmation")
         if not confirmation:
-            return apology("must confirm password", 400)
+            return apology("must confirm password")
 
         if password != confirmation:
-            return apology("passwords don't match", 400)
+            return apology("passwords don't match")
 
         # User insertion
         try:
@@ -244,7 +248,7 @@ def register():
                        username, generate_password_hash(password))
         except ValueError:
             # Username already exists
-            return apology("username already exists", 400)
+            return apology("username already exists")
 
         # Automatic login after registration
         rows = db.execute("SELECT * FROM users WHERE username = ?", username)
