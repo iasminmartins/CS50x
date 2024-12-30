@@ -302,7 +302,7 @@ def sell():
             return apology("Invalid stock symbol")
 
         if shares < 0:
-            return apology("Must provide a positive number of shares", 400)
+            return apology("Must provide a positive number of shares")
 
         total_cost = shares * stock["price"]
 
