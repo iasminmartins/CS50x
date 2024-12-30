@@ -98,19 +98,19 @@ def buy():
 
     else:
         # Get symbol and validate
-        symbol = request.form.get("symbol")
+        symbol = request.form.get("symbol").upper().strip()
         if not symbol:
-            return apology("must provide symbol", 400)
+            return apology("Must provide stock symbol", 400)
 
         # Lookup stock and validate
         stock = lookup(symbol)
         if stock is None:
-            return apology("invalid symbol", 400)
+            return apology("Invalid stock symbol", 400)
 
         # Get shares and validate
         shares = request.form.get("shares")
         if not shares or not shares.isdigit() or int(shares) <= 0:
-            return apology("must provide a positive number of shares", 400)
+            return apology("Must provide a positive number of shares", 400)
 
         shares = int(shares)
         price = stock["price"]
@@ -120,14 +120,17 @@ def buy():
         user_id = session["user_id"]
         user_cash = db.execute("SELECT cash FROM users WHERE id = ?", user_id)
 
-        if len(user_cash) != 1:
-            return apology("Could not retrieve cash balance", 500)
+        if not user or "cash" not in user[0]:
+            return apology("User not found or invalid data", 500)
+
+        #if len(user_cash) != 1:
+          #  return apology("Could not retrieve cash balance", 500)
 
         user_cash = user_cash[0]["cash"]
 
         # Check if the user has enough cash
         if total_cost > user_cash:
-            return apology("you cannot afford that purchase", 400)
+            return apology("Not enough cash", 400)
 
         try:
             # Deduct cash
@@ -137,6 +140,7 @@ def buy():
             db.execute("INSERT INTO transactions (user_id, symbol, shares, price) VALUES (?, ?, ?, ?)",
                        user_id, symbol, shares, price)
 
+            flash(f"Successfully purchased {shares} share(s) of {symbol}!")
         except Exception as e:
             app.logger.error(f"Error processing transaction: {str(e)}")
             return apology(f"Error processing transaction: {str(e)}", 500)
