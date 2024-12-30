@@ -101,18 +101,24 @@ def buy():
         # User's current cash balance
         user_id = session["user_id"]
         user_cash = db.execute("SELECT cash FROM users WHERE id = ?", user_id)
+
         if len(user_cash) != 1:
             return apology("Could not retrieve cash balance", 500)
+
         user_cash = user_cash[0]["cash"]
 
         if total_cost > user_cash:
             return apology("you cannot afford that purchase", 400)
 
-        # Update cash
-        db.execute("UPDATE users SET cash = cash - ? WHERE id = ?", total_cost, user_id)
+        try:
+            # Update cash
+            db.execute("UPDATE users SET cash = cash - ? WHERE id = ?", total_cost, user_id)
 
-        # Record transaction
-        db.execute("INSERT INTO transactions (user_id, symbol, shares, price) VALUES (?, ?, ?, ?)", user_id, symbol, shares, price)
+            # Record transaction
+            db.execute("INSERT INTO transactions (user_id, symbol, shares, price) VALUES (?, ?, ?, ?)", user_id, symbol, shares, price)
+
+        except Exception as e:
+            return apology(f"Error processing transaction: {str(e)}", 500)
 
         return redirect("/")
 
