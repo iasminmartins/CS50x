@@ -123,23 +123,44 @@ def buy():
         user_cash = user_cash_query[0]["cash"]
         app.logger.debug(f"User cash before purchase: {user_cash}")
 
-
         if total_cost > user_cash:
             return apology("Not enough cash", 400)
 
         try:
+            # Start the transaction
             db.execute("BEGIN TRANSACTION;")
+
+            # Update user's cash balance
             db.execute("UPDATE users SET cash = cash - ? WHERE id = ?", total_cost, user_id)
-            db.execute("INSERT INTO transactions (user_id, symbol, shares, price) VALUES (?, ?, ?, ?)",
-                    user_id, symbol, shares, price)
+
+            # Check if the user already owns shares of the stock
+            existing_stock = db.execute("""
+                SELECT shares FROM transactions WHERE user_id = ? AND symbol = ?
+            """, user_id, symbol)
+
+            if existing_stock:
+                # User already owns shares of this stock, update their share count
+                new_shares = existing_stock[0]["shares"] + shares
+                db.execute("""
+                    UPDATE transactions SET shares = ? WHERE user_id = ? AND symbol = ?
+                """, new_shares, user_id, symbol)
+            else:
+                # User doesn't own shares of this stock, insert a new record
+                db.execute("""
+                    INSERT INTO transactions (user_id, symbol, shares, price)
+                    VALUES (?, ?, ?, ?)
+                """, user_id, symbol, shares, price)
+
+            # Commit the transaction
             db.execute("COMMIT;")
             flash(f"Successfully purchased {shares} share(s) of {symbol}!")
         except Exception as e:
+            # Rollback if there's an error
             db.execute("ROLLBACK;")
             app.logger.error(f"Error processing transaction: {str(e)}")
             return apology(f"Error processing transaction: {str(e)}", 500)
 
-        updated_cash = db.execute("SELECT cash FROM users WHERE id = ?", user_id)[0]["cash"]
+        # Redirect to the portfolio page after a successful purchase
         return redirect("/")
 
 
