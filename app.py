@@ -5,6 +5,7 @@ from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from helpers import apology, login_required, lookup, usd
+import datetime
 
 # Configure application
 app = Flask(__name__)
@@ -46,11 +47,11 @@ def index():
 
     # Query the user's stock portfolio
     stocks = db.execute("""
-        SELECT symbol, SUM(shares) AS total_shares
+        SELECT symbol, SUM(shares) AS shares, price
         FROM transactions
         WHERE user_id = ?
         GROUP BY symbol
-        HAVING total_shares > 0
+        HAVING shares > 0
     """, user_id)  # Filter out stocks where total_shares <= 0
 
     stock_data = []
@@ -81,9 +82,9 @@ def index():
 
     return render_template(
         "index.html",
-        stock_data=stock_data,
-        cash=user_cash,
-        grand_total=grand_total
+        stock_data,
+        user_cash,
+        grand_total
     )
 
 
@@ -125,11 +126,13 @@ def buy():
         update_cash = user_cash - total_cost
         db.execute("UPDATE users SET cash = ? WHERE id = ?", update_cash, user_id)
 
+        date = datetime.datetime.now()
+
         # Insert into the transactions table with the CURRENT_DATE for transaction_date
         db.execute("""
             INSERT INTO transactions (user_id, symbol, shares, price, transaction_date)
-            VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
-        """, user_id, stock["symbol"], shares, stock["price"])
+            VALUES (?, ?, ?, ?, ?)
+        """, user_id, stock["symbol"], shares, stock["price"], date)
 
         flash(f"Transaction completed successfully! {shares} shares of {symbol} were bought!")
 
