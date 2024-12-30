@@ -36,7 +36,7 @@ def after_request(response):
 def index():
     """Show portfolio of stocks"""
 
-     # Get the current user's cash balance
+    # Get the current user's cash balance
     user_id = session["user_id"]
     cash_query = db.execute("SELECT cash FROM users WHERE id = ?", user_id)
 
@@ -137,6 +137,7 @@ def buy():
         flash(f"Transaction completed successfully! {shares} shares of {symbol} were bought!")
 
         return redirect("/")
+
 
 @app.route("/history")
 @login_required
