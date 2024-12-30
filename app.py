@@ -68,7 +68,7 @@ def index():
                 "total_value": total_value
             })
 
-    grand_total += total_value
+            grand_total += total_value
 
     return render_template("index.html", stock_data=stock_data, cash=user_cash, grand_total=grand_total)
 
@@ -100,7 +100,7 @@ def buy():
 
         # User's current cash balance
         user_id = session["user_id"]
-        user_cash = db.execute("SELECT cash FROM users WHERE id = ?", user_id=user_id)
+        user_cash = db.execute("SELECT cash FROM users WHERE id = ?", user_id)
 
         if len(user_cash) != 1:
             return apology("Could not retrieve cash balance", 500)
