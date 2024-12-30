@@ -92,31 +92,35 @@ def index():
 @login_required
 def buy():
     """Buy shares of stock"""
-
     if request.method == "GET":
         return render_template("buy.html")
 
     else:
-        # Get the stock symbol and validate it
         symbol = request.form.get("symbol").upper().strip()
         if not symbol:
             return apology("Must provide stock symbol", 400)
 
-        # Look up the stock's data
         stock = lookup(symbol)
         if stock is None:
             return apology("Invalid stock symbol", 400)
 
-        # Get the number of shares to buy
+        # Log the stock data to debug
+        app.logger.debug(f"Stock data: {stock}")
+
         shares = request.form.get("shares")
         if not shares or not shares.isdigit() or int(shares) <= 0:
             return apology("Must provide a positive number of shares", 400)
+
+        # Log the shares input
+        app.logger.debug(f"Shares: {shares}")
 
         shares = int(shares)
         price = stock["price"]
         total_cost = price * shares
 
-        # Get the current user's cash balance
+        # Log the total cost calculation
+        app.logger.debug(f"Total cost: {total_cost}")
+
         user_id = session["user_id"]
         user_cash_query = db.execute("SELECT cash FROM users WHERE id = ?", user_id)
 
@@ -124,41 +128,23 @@ def buy():
             return apology("Could not retrieve cash balance", 500)
 
         user_cash = user_cash_query[0]["cash"]
+        app.logger.debug(f"User cash before purchase: {user_cash}")
 
-        # Check if the user has enough cash
         if total_cost > user_cash:
             return apology("Not enough cash", 400)
 
+        # Make the purchase
         try:
-            # Deduct cash from the user's balance
             db.execute("UPDATE users SET cash = cash - ? WHERE id = ?", total_cost, user_id)
-
-            # Add the purchase to the purchases table
-            db.execute("INSERT INTO purchases (user_id, symbol, shares, price, total_cost) VALUES (?, ?, ?, ?, ?)",
-                    user_id, symbol, shares, price, total_cost)
-
-            # Flash a success message
-            flash(f"Successfully purchased {shares} share(s) of {symbol} for ${total_cost:.2f}!")
-
+            db.execute("INSERT INTO transactions (user_id, symbol, shares, price) VALUES (?, ?, ?, ?)",
+                       user_id, symbol, shares, price)
+            flash(f"Successfully purchased {shares} share(s) of {symbol} at ${price} each!")
         except Exception as e:
-            # Log the error and show an apology message
             app.logger.error(f"Error processing transaction: {str(e)}")
             return apology(f"Error processing transaction: {str(e)}", 500)
 
-        # Retrieve updated portfolio data, including the purchased stock
-        portfolio_data = db.execute("""
-            SELECT symbol, SUM(shares) as shares, price
-            FROM purchases
-            JOIN stocks ON stocks.symbol = purchases.symbol
-            WHERE user_id = ?
-            GROUP BY symbol
-        """, user_id)
-
-        grand_total = sum([stock["shares"] * stock["price"] for stock in portfolio_data])
-
-        # Pass the portfolio data and grand total to the index template
-        return render_template("index.html", stock_data=portfolio_data, grand_total=grand_total)
-
+        # Redirect to the home page
+        return redirect("/")
 
 @app.route("/history")
 @login_required
