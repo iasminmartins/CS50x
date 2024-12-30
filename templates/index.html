@@ -24,7 +24,7 @@
                     <td>{{ stock.symbol }}</td>
                     <td>{{ stock.shares }}</td>
                     <td>{{ stock.price }}</td>
-                    <td>{{ stock.total_value }}</td>
+                    <td>{{ stock.shares * stock.price }}</td>
                 </tr>
             {% endfor %}
         </tbody>
