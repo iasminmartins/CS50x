@@ -40,53 +40,25 @@ def index():
     user_id = session["user_id"]
     cash_query = db.execute("SELECT cash FROM users WHERE id = ?", user_id)
 
-    if not cash_query:
+    if not cash_query or len(cash_query) != 1:
         return apology("Unable to fetch user data", 500)
 
     user_cash = cash_query[0]["cash"]
 
-    # Query the user's stock portfolio
-    stocks = db.execute("""
-        SELECT symbol, SUM(shares) AS total_shares
-        FROM transactions
-        WHERE user_id = ?
-        GROUP BY symbol
-        HAVING total_shares > 0
-    """, user_id)  # Filter out stocks where total_shares <= 0
+    stock_data = db.execute("""
+            SELECT symbol, SUM(shares) AS shares, price
+            FROM transactions
+            WHERE user_id = ?
+            GROUP BY symbol
+        """, user_id)
 
-    stock_data = []
-    grand_total = user_cash
+        # Calculate the total value of the portfolio
+        grand_total = user_cash
+        for stock in stock_data:
+            stock["total_value"] = stock["shares"] * stock["price"]
+            grand_total += stock["total_value"]
 
-    # Fetch real-time stock prices and calculate totals
-    for stock in stocks:
-        symbol = stock["symbol"]
-        total_shares = stock["total_shares"]
-
-        stock_info = lookup(symbol)
-        if not stock_info:
-            return apology(f"Could not fetch data for symbol {symbol}", 400)
-
-        price = stock_info["price"]
-        total_value = total_shares * price
-
-        # Add stock details to the portfolio data
-        stock_data.append({
-            "symbol": symbol,
-            "shares": total_shares,
-            "price": price,
-            "total_value": total_value
-        })
-
-        # Update the grand total with the stock's current value
-        grand_total += total_value
-
-    return render_template(
-        "index.html",
-        stock_data=stock_data,
-        cash=user_cash,
-        grand_total=grand_total
-    )
-
+        return render_template("index.html", cash=user_cash, stock_data=stock_data, grand_total=grand_total)
 
 @app.route("/buy", methods=["GET", "POST"])
 @login_required
@@ -115,14 +87,14 @@ def buy():
         app.logger.debug(f"Total cost: {total_cost}")
 
         user_id = session["user_id"]
-        user_cash = db.execute("SELECT cash FROM users WHERE id = ?", user_id)
+        user_cash_query = db.execute("SELECT cash FROM users WHERE id = ?", user_id)
 
-        if not user_cash or "cash" not in user_cash[0] or len(user_cash) != 1:
+        if not user_cash_query or len(user_cash_query) != 1:
             return apology("Could not retrieve cash balance", 500)
 
+        user_cash = user_cash_query[0]["cash"]
         app.logger.debug(f"User cash before purchase: {user_cash}")
 
-        user_cash = user_cash[0]["cash"]
 
         if total_cost > user_cash:
             return apology("Not enough cash", 400)
@@ -139,6 +111,7 @@ def buy():
             app.logger.error(f"Error processing transaction: {str(e)}")
             return apology(f"Error processing transaction: {str(e)}", 500)
 
+        updated_cash = db.execute("SELECT cash FROM users WHERE id = ?", user_id)[0]["cash"]
         return redirect("/")
 
 
