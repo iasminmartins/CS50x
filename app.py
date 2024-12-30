@@ -308,9 +308,14 @@ def sell():
 
         user_id = session["user_id"]
         user_cash_query = db.execute("SELECT cash FROM users WHERE id = ?", user_id)
-
         user_cash = user_cash_query[0]["cash"]
 
+        user_shares = db.execute("SELECT shares FROM transactions WHERE id = ? AND symbol = ? GROUP BY symbol", user_id, symbol)
+        user_shares_real = user_shares[0]["shares"]
+
+        if shares > user_shares_real:
+            return apology("Invalid amount of shares")
+        
         update_cash = user_cash + total_cost
         db.execute("UPDATE users SET cash = ? WHERE id = ?", update_cash, user_id)
 
@@ -320,7 +325,7 @@ def sell():
         db.execute("""
             INSERT INTO transactions (user_id, symbol, shares, price, transaction_date)
             VALUES (?, ?, ?, ?, ?)
-        """, user_id, stock["symbol"], shares, stock["price"], date)
+        """, user_id, stock["symbol"], (-1)*shares, stock["price"], date)
 
         flash(f"Transaction completed successfully! {shares} shares of {symbol} were sold!")
 
