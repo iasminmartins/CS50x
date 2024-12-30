@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Transaction History
+{% endblock %}
+
+{% block main %}
+    <h2>Transaction History</h2>
+
+    {% if transactions %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Symbol</th>
+                    <th>Transaction</th>
+                    <th>Shares</th>
+                    <th>Price</th>
+                    <th>Date/Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                    <tr>
+                        <td>{{ transaction.symbol }}</td>
+                        <td>
+                            {% if transaction.shares > 0 %}
+                                Bought
+                            {% else %}
+                                Sold
+                            {% endif %}
+                        </td>
+                        <td>{{ transaction.shares | abs }}</td>
+                        <td>${{ transaction.price }}</td>
+                        <td>{{ transaction.time }}</td>  <!-- Use 'time' or 'timestamp' based on your field name -->
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>You have no transaction history yet.</p>
+    {% endif %}
+{% endblock %}
