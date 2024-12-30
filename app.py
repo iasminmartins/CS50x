@@ -82,14 +82,17 @@ def buy():
         return render_template("buy.html")
 
     else:
+        # Get symbol and validate
         symbol = request.form.get("symbol")
         if not symbol:
             return apology("must provide symbol", 400)
 
+        # Lookup stock and validate
         stock = lookup(symbol)
         if stock is None:
             return apology("invalid symbol", 400)
 
+        # Get shares and validate
         shares = request.form.get("shares")
         if not shares or not shares.isdigit() or int(shares) <= 0:
             return apology("must provide a positive number of shares", 400)
@@ -98,7 +101,7 @@ def buy():
         price = stock["price"]
         total_cost = price * shares
 
-        # User's current cash balance
+        # Get user's current cash balance
         user_id = session["user_id"]
         user_cash = db.execute("SELECT cash FROM users WHERE id = ?", user_id)
 
@@ -107,11 +110,12 @@ def buy():
 
         user_cash = user_cash[0]["cash"]
 
+        # Check if the user has enough cash
         if total_cost > user_cash:
             return apology("you cannot afford that purchase", 400)
 
         try:
-            # Update cash
+            # Deduct cash
             db.execute("UPDATE users SET cash = cash - ? WHERE id = ?", total_cost, user_id)
 
             # Record transaction
@@ -119,8 +123,10 @@ def buy():
                        user_id, symbol, shares, price)
 
         except Exception as e:
+            app.logger.error(f"Error processing transaction: {str(e)}")
             return apology(f"Error processing transaction: {str(e)}", 500)
 
+        # Redirect to the portfolio
         return redirect("/")
 
 
