@@ -286,48 +286,43 @@ def sell():
         return render_template("sell.html", stocks=stocks)
 
     else:
+
         symbol = request.form.get("symbol")
-        shares_to_sell = request.form.get("shares")
+        try:
+            shares = int(request.form.get("shares"))
+        except ValueError:
+            return apology("Shares must be a number")
 
         if not symbol:
-            return apology("You must select a stock to sell.")
+            return apology("Must provide stock symbol")
 
-        if not shares_to_sell or not shares_to_sell.isdigit() or int(shares_to_sell) <= 0:
-            return apology("Invalid number of shares.")
+        stock = lookup(symbol.upper())
 
-        shares_to_sell = int(shares_to_sell)
+        if stock is None:
+            return apology("Invalid stock symbol")
 
-        user_stocks = db.execute("""
-            SELECT symbol, SUM(shares) AS total_shares
-            FROM transactions
-            WHERE user_id = :user_id AND symbol = :symbol
-            GROUP BY symbol
-        """, user_id=user_id, symbol=symbol)
+        if shares < 0:
+            return apology("Must provide a positive number of shares", 400)
 
-        if not user_stocks or user_stocks[0]["total_shares"] < shares_to_sell:
-            return apology("You don't own enough shares to sell.")
+        total_cost = shares * stock["price"]
 
-        stock_info = lookup(symbol)
-        price = stock_info["price"]
+        user_id = session["user_id"]
+        user_cash_query = db.execute("SELECT cash FROM users WHERE id = ?", user_id)
 
+        user_cash = user_cash_query[0]["cash"]
+
+        update_cash = user_cash + total_cost
+        db.execute("UPDATE users SET cash = ? WHERE id = ?", update_cash, user_id)
+
+        date = datetime.datetime.now()
+
+        # Insert into the transactions table with the CURRENT_DATE for transaction_date
         db.execute("""
-            UPDATE transactions
-            SET shares = shares - :shares
-            WHERE user_id = :user_id AND symbol = :symbol
-            AND shares >= :shares
-        """, user_id=user_id, symbol=symbol, shares=shares_to_sell)
+            INSERT INTO transactions (user_id, symbol, shares, price, transaction_date)
+            VALUES (?, ?, ?, ?, ?)
+        """, user_id, stock["symbol"], shares, stock["price"], date)
 
-        cash_from_sale = shares_to_sell * price
-        db.execute("""
-            UPDATE users
-            SET cash = cash + :cash
-            WHERE id = :user_id
-        """, cash=cash_from_sale, user_id=user_id)
-
-        db.execute("""
-            INSERT INTO transactions (user_id, symbol, shares, price)
-            VALUES (:user_id, :symbol, :shares, :price)
-        """, user_id=user_id, symbol=symbol, shares=-shares_to_sell, price=price)
+        flash(f"Transaction completed successfully! {shares} shares of {symbol} were sold!")
 
         return redirect("/")
 
