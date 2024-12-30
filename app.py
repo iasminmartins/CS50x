@@ -36,41 +36,56 @@ def after_request(response):
 def index():
     """Show portfolio of stocks"""
 
+     # Get the current user's cash balance
     user_id = session["user_id"]
-    user_cash = db.execute("SELECT cash FROM users WHERE id = :user_id", user_id=user_id)[0]["cash"]
+    cash_query = db.execute("SELECT cash FROM users WHERE id = ?", user_id)
 
-    # Get the stocks and number of shares the user owns
+    if not cash_query:
+        return apology("Unable to fetch user data", 500)
+
+    user_cash = cash_query[0]["cash"]
+
+    # Query the user's stock portfolio
     stocks = db.execute("""
         SELECT symbol, SUM(shares) AS total_shares
         FROM transactions
-        WHERE user_id = :user_id
+        WHERE user_id = ?
         GROUP BY symbol
-    """, user_id=user_id)
+        HAVING total_shares > 0
+    """, user_id)  # Filter out stocks where total_shares <= 0
 
     stock_data = []
-
     grand_total = user_cash
 
+    # Fetch real-time stock prices and calculate totals
     for stock in stocks:
         symbol = stock["symbol"]
         total_shares = stock["total_shares"]
 
         stock_info = lookup(symbol)
-        if stock_info:
-            price = stock_info["price"]
-            total_value = total_shares * price
+        if not stock_info:
+            return apology(f"Could not fetch data for symbol {symbol}", 400)
 
-            # Add stock data to list
-            stock_data.append({
-                "symbol": symbol,
-                "shares": total_shares,
-                "price": price,
-                "total_value": total_value
-            })
+        price = stock_info["price"]
+        total_value = total_shares * price
 
-            grand_total += total_value
+        # Add stock details to the portfolio data
+        stock_data.append({
+            "symbol": symbol,
+            "shares": total_shares,
+            "price": price,
+            "total_value": total_value
+        })
 
-    return render_template("index.html", stock_data=stock_data, cash=user_cash, grand_total=grand_total)
+        # Update the grand total with the stock's current value
+        grand_total += total_value
+
+    return render_template(
+        "index.html",
+        stock_data=stock_data,
+        cash=user_cash,
+        grand_total=grand_total
+    )
 
 
 @app.route("/buy", methods=["GET", "POST"])
