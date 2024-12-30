@@ -4,7 +4,6 @@ from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
-
 from helpers import apology, login_required, lookup, usd
 
 # Configure application
@@ -213,15 +212,16 @@ def quote():
     else:
         symbol = request.form.get("symbol")
         if not symbol:
-            return apology("must provide symbol")
+            return apology("Must provide symbol")
 
         # Look up stock
-        stock = lookup(symbol)
+        stock = lookup(symbol.upper())
+
         if stock is None:
-            return apology("invalid symbol")
+            return apology("Invalid symbol")
 
         # If stock found
-        return render_template("quoted.html", stock=stock)
+        return render_template("quoted.html", name = stock["name"], price = stock["price"], symbol = stock["symbol"])
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -231,18 +231,18 @@ def register():
     if request.method == "POST":
         username = request.form.get("username")
         if not username:
-            return apology("must provide username")
+            return apology("Must provide username")
 
         password = request.form.get("password")
         if not password:
-            return apology("must provide password")
+            return apology("Must provide password")
 
         confirmation = request.form.get("confirmation")
         if not confirmation:
-            return apology("must confirm password")
+            return apology("Must confirm password")
 
         if password != confirmation:
-            return apology("passwords don't match")
+            return apology("Passwords don't match")
 
         # User insertion
         try:
