@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Water Reminder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="popup.js" defer></script>
+</head>
+<body>
+  <div class="container">
+    <div class="rectangle">
+      <header>
+        <img src="icon128.png" alt="Ducky" class="header-icon">
+        <h2>Water Reminder</h2>
+      </header>
+      <section class="goal-section">
+        <label for="goal">Daily goal (cups):</label>
+        <input type="number" id="goal" min="1" max="30">
+        <button id="setGoal">Set Goal</button>
+        <p id="progress">Current goal: 8 cups.</p>
+      </section>
+    </div>
+
+    <div class="rectangle">
+      <section class="cups-section">
+        <h3>Cups Drunk Today</h3>
+        <div id="cupProgress" class="cup-progress"></div>
+        <div class="cup-controls">
+          <button id="addCup">Add Cup</button>
+          <button id="removeCup">Remove Cup</button>
+        </div>
+        <p>Cups Drunk: <span id="cupsToday">0</span></p>
+      </section>
+    </div>
+
+    <div class="rectangle">
+      <h3>Settings</h3>
+      <section class="reminder-section">
+        <label for="interval">Reminder interval (min):</label>
+        <input type="number" id="interval" min="1">
+        <button id="setInterval">Set Interval</button>
+        <p id="status">No interval set.</p>
+      </section>
+      <section class="notification-section">
+        <input type="checkbox" id="mute-notifications">
+        <label for="mute-notifications">Mute notifications</label>
+      </section>
+      <footer>
+        <p>💧 Stay hydrated, stay healthy! 💧</p>
+      </footer>
+    </div>
+  </div>
+</body>
+</html>
