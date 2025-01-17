@@ -151,7 +151,7 @@ void add_pairs(void)
 // Sort pairs in decreasing order by strength of victory
 void sort_pairs(void)
 {
-    // Bubble sort
+    // Bubble sort to arrange pairs by the margin of victory
     for (int i = 0; i < pair_count - 1; i++)
     {
         for (int j = 0; j < pair_count - i - 1; j++)
@@ -181,6 +181,7 @@ void lock_pairs(void)
     }
 }
 
+// Check if locking a pair creates a cycle in the graph
 bool creates_cycle(int winner, int loser)
 {
     if (loser == winner)
@@ -208,14 +209,13 @@ void print_winner(void)
             if (locked[j][i])
             {
                 source = false;
-                break; // Exit the inner for loop and continue with the next iteration of the outer
-                       // for loop
+                break; // Exit inner loop to check next candidate
             }
         }
         if (source)
         {
             printf("%s\n", candidates[i]);
-            return; // Exit the entire print_winner function
+            return; // Winner found, exit the function
         }
     }
 }
