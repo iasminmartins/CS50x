@@ -49,7 +49,8 @@ int main(int argc, string argv[])
         printf("Maximum number of candidates is %i\n", MAX_CANDIDATES);
         return 2;
     }
-    // Anexa as informações a respeito do nome, voto e status de eliminação à candidates
+
+    // Assign candidate information (name, vote count, elimination status) to candidates
     for (int i = 0; i < candidate_count; i++)
     {
         candidates[i].name = argv[i + 1];
@@ -57,6 +58,7 @@ int main(int argc, string argv[])
         candidates[i].eliminated = false;
     }
 
+    // Get number of voters
     voter_count = get_int("Number of voters: ");
     if (voter_count > MAX_VOTERS)
     {
@@ -67,18 +69,12 @@ int main(int argc, string argv[])
     // Keep querying for votes
     for (int i = 0; i < voter_count; i++)
     {
-
         // Query for each rank
         for (int j = 0; j < candidate_count; j++)
         {
             string name = get_string("Rank %i: ", j + 1);
 
-            // Record vote, unless it's invalid. The "!" is the logical NOT operator
-            // If vote(i, j, name) returns true, the condition !vote(i, j, name) will be false,
-            // and the code inside the if block will not execute. If vote(i, j, name) returns false,
-            // the condition !vote(i, j, name) will be true, and the code inside the if block will
-            // execute
-
+            // Record vote, unless it's invalid
             if (!vote(i, j, name))
             {
                 printf("Invalid vote.\n");
@@ -134,11 +130,13 @@ int main(int argc, string argv[])
 // Record preference if vote is valid
 bool vote(int voter, int rank, string name)
 {
+    // Check for valid voter and rank
     if (voter < 0 || voter >= voter_count || rank < 0 || rank >= candidate_count)
     {
         return false;
     }
 
+    // Check if the candidate name matches an existing candidate
     for (int i = 0; i < candidate_count; i++)
     {
         if (strcmp(candidates[i].name, name) == 0)
@@ -147,7 +145,7 @@ bool vote(int voter, int rank, string name)
             return true; // Successfully recorded
         }
     }
-    printf("No match found for candidate name: %s\n", name);
+    printf("No match found for candidate name: %s\n", name); // Invalid candidate name
     return false;
 }
 
@@ -160,16 +158,18 @@ void tabulate(void)
         candidates[i].votes = 0;
     }
 
+    // Count votes for each voter and rank
     for (int i = 0; i < voter_count; i++)
     {
         for (int j = 0; j < candidate_count; j++)
         {
             int index = preferences[i][j];
 
+            // Add vote if candidate is not eliminated
             if (!candidates[index].eliminated)
             {
                 candidates[index].votes++;
-                break;
+                break;     // Only count the first non-eliminated choice
             }
         }
     }
@@ -179,21 +179,22 @@ void tabulate(void)
 // Print the winner of the election, if there is one
 bool print_winner(void)
 {
+    // Check if any candidate has more than half the votes
     for (int i = 0; i < candidate_count; i++)
     {
         if (candidates[i].votes > (voter_count / 2))
         {
-            printf("%s\n", candidates[i].name);
-            return true;
+            printf("%s\n", candidates[i].name);    // Print winner
+            return true;    // Election is won
         }
     }
-    return false;
+    return false;    // No winner yet
 }
 
 // Return the minimum number of votes any remaining candidate has
 int find_min(void)
 {
-    int min = voter_count;
+    int min = voter_count;    // Start with the maximum number of votes
     for (int i = 0; i < candidate_count; i++)
     {
         if (!candidates[i].eliminated)
@@ -210,6 +211,7 @@ int find_min(void)
 // Return true if the election is tied between all candidates, false otherwise
 bool is_tie(int min)
 {
+    // Check if all non-eliminated candidates have minimum number of votes
     for (int i = 0; i < candidate_count; i++)
     {
         if (!candidates[i].eliminated)
@@ -221,12 +223,13 @@ bool is_tie(int min)
         }
     }
 
-    return true;
+    return true;     // All remaining candidates have the same vote count
 }
 
-// Eliminate the candidate (or candidates) in last place
+// Eliminate the candidate(s) in last place
 void eliminate(int min)
 {
+    // Mark all candidates with the minimum vote count as eliminated
     for (int i = 0; i < candidate_count; i++)
     {
         if (candidates[i].votes == min)
