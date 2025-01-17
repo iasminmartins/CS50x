@@ -10,11 +10,11 @@ void grayscale(int height, int width, RGBTRIPLE image[height][width])
     {
         for (int j = 0; j < width; j++)
         {
-            // Calculate average
+            // Calculate average color value for each pixel
             average =
                 round((image[i][j].rgbtRed + image[i][j].rgbtGreen + image[i][j].rgbtBlue) / 3.0);
 
-            // Assign average to color channels
+            // Assign the average to all color channels (RGB)
             image[i][j].rgbtRed = average;
             image[i][j].rgbtGreen = average;
             image[i][j].rgbtBlue = average;
@@ -26,12 +26,12 @@ void grayscale(int height, int width, RGBTRIPLE image[height][width])
 // Reflect image horizontally
 void reflect(int height, int width, RGBTRIPLE image[height][width])
 {
-    // Iterates through pixels
+    // Iterate through rows and swap pixels to reflect image horizontally
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width / 2; j++)
         {
-            // Reflect image using a temporary variable
+            // Temporary variable for swapping
             RGBTRIPLE tmp = image[i][j];
             image[i][j] = image[i][width - j - 1];
             image[i][width - j - 1] = tmp;
@@ -44,7 +44,7 @@ void reflect(int height, int width, RGBTRIPLE image[height][width])
 void blur(int height, int width, RGBTRIPLE image[height][width])
 {
     RGBTRIPLE copy[height][width];
-    // Copy original image
+    // Copy original image for reference
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width; j++)
@@ -53,25 +53,25 @@ void blur(int height, int width, RGBTRIPLE image[height][width])
         }
     }
 
-    // Iterate through pixels
+    // Iterate through pixels and apply averaging for blur effect
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width; j++)
         {
             int sumRed = 0, sumGreen = 0, sumBlue = 0, count = 0;
 
-            // Iterates through 3x3 grid
+            // Iterates through 3x3 grid around current pixel
             for (int k = -1; k <= 1; k++)
             {
                 for (int l = -1; l <= 1; l++)
                 {
-                    int ni = i + k; // Row
-                    int nj = j + l; // Column
+                    int ni = i + k; // Row index
+                    int nj = j + l; // Column index
 
                     // Check bounds
                     if (ni >= 0 && ni < height && nj >= 0 && nj < width)
                     {
-                        // Calculate sums
+                        // Accumulate color values for averaging
                         sumRed += copy[ni][nj].rgbtRed;
                         sumGreen += copy[ni][nj].rgbtGreen;
                         sumBlue += copy[ni][nj].rgbtBlue;
@@ -80,7 +80,7 @@ void blur(int height, int width, RGBTRIPLE image[height][width])
                 }
             }
 
-            // Calculate new values
+            // Compute the average color values for the pixel
             image[i][j].rgbtRed = round((float) sumRed / count);
             image[i][j].rgbtGreen = round((float) sumGreen / count);
             image[i][j].rgbtBlue = round((float) sumBlue / count);
@@ -89,14 +89,14 @@ void blur(int height, int width, RGBTRIPLE image[height][width])
     return;
 }
 
-// Detect edges
+// Detect edges using Sobel operator
 void edges(int height, int width, RGBTRIPLE image[height][width])
 {
-    // Kernels
+    // Sobel kernels for edge detection (Gx and Gy)
     int Gx[3][3] = {{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}};
     int Gy[3][3] = {{-1, -2, -1}, {0, 0, 0}, {1, 2, 1}};
 
-    // Copy original image
+    // Copy original image to maintain original pixel values
     RGBTRIPLE copy[height][width];
     for (int i = 0; i < height; i++)
     {
@@ -113,13 +113,13 @@ void edges(int height, int width, RGBTRIPLE image[height][width])
         {
             int sumRedX = 0, sumRedY = 0, sumGreenX = 0, sumGreenY = 0, sumBlueX = 0, sumBlueY = 0;
 
-            // Iterates through 3x3 grid
+            // Apply Sobel kernels to the 3x3 grid around the pixel
             for (int k = -1; k <= 1; k++)
             {
                 for (int l = -1; l <= 1; l++)
                 {
-                    int ni = i + k;
-                    int nj = j + l;
+                    int ni = i + k;    // Row index
+                    int nj = j + l;    // Column index
 
                     // Check bounds
                     if (ni >= 0 && ni < height && nj >= 0 && nj < width)
@@ -140,7 +140,7 @@ void edges(int height, int width, RGBTRIPLE image[height][width])
                 }
             }
 
-            // Calculate Sobel value
+            // Calculate final edge value by combining Gx and Gy results
             int finalRed = round(sqrt(sumRedX * sumRedX + sumRedY * sumRedY));
             int finalGreen = round(sqrt(sumGreenX * sumGreenX + sumGreenY * sumGreenY));
             int finalBlue = round(sqrt(sumBlueX * sumBlueX + sumBlueY * sumBlueY));
