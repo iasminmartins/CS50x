@@ -12,14 +12,12 @@
 // Represents a node in a hash table
 typedef struct node
 {
-    char word[LENGTH + 1];
-    struct node *next;
+    char word[LENGTH + 1]; // The word stored in the node
+    struct node *next; // Pointer to the next node (for collision handling)
 } node;
 
-// TODO: Choose number of buckets in hash table
-const unsigned int N = 143107;
-
-#define HASH_MULTIPLIER 31
+const unsigned int N = 143107; // Number of buckets in hash table (chosen to reduce collisions)
+#define HASH_MULTIPLIER 31 // Multiplier for hash function to reduce collisions
 
 // Hash table
 node *table[N];
@@ -33,7 +31,7 @@ bool check(const char *word)
     // Traverse linked list at hashed index
     while (ptr != NULL)
     {
-        // Compare case-insensitively
+        // Compare word case-insensitively
         if (strcasecmp(ptr->word, word) == 0)
         {
             return true; // Word found
@@ -49,13 +47,14 @@ unsigned int hash(const char *word)
 
     unsigned long hash_value = 0;
 
+    // Iterate over each character in the word to compute hash value
     for (int i = 0; word[i] != '\0'; i++)
     {
         // Ensure case insensitivity (tolower) and reduce collisions (prime number)
         hash_value = (hash_value * HASH_MULTIPLIER + tolower(word[i])) % N;
     }
 
-    return hash_value % N; // Ensure bounds
+    return hash_value % N; // Ensure table bounds
 }
 
 // Loads dictionary into memory, returning true if successful, else false
@@ -69,7 +68,7 @@ bool load(const char *dictionary)
         return false;
     }
 
-    // Initialize table
+    // Initialize hash table with NULL values
     for (int i = 0; i < N; i++)
     {
         table[i] = NULL;
@@ -122,7 +121,7 @@ unsigned int size(void)
 // Unloads dictionary from memory, returning true if successful, else false
 bool unload(void)
 {
-    // Free each bucket
+    // Free each node in the hash table
     for (int i = 0; i < N; i++)
     {
         node *ptr = table[i];
