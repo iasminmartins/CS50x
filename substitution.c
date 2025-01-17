@@ -57,11 +57,13 @@ int main(int argc, string argv[])
     return 0;
 }
 
+// Function to check if key has all unique characters
 bool unique(string key)
 {
     bool lower_used[26] = {false};
     bool upper_used[26] = {false};
 
+    // Check each character in key
     for (int i = 0, len = strlen(key); i < len; i++)
     {
         char c = key[i];
@@ -71,6 +73,7 @@ bool unique(string key)
         {
             index = c - 'a';
 
+            // If character has been used before, return false
             if (lower_used[index])
             {
                 return false;
@@ -83,6 +86,7 @@ bool unique(string key)
         {
             index = c - 'A';
 
+            // If the character has been used before, return false
             if (upper_used[index])
             {
                 return false;
@@ -93,18 +97,22 @@ bool unique(string key)
     return true;
 }
 
+// Function to encrypt a character using key
 char encrypt(char c, string key)
 {
     if (isupper(c))
     {
+        // Convert to uppercase and map to the corresponding character in key
         return toupper(key[c - 'A']);
     }
     else if (islower(c))
     {
+        // Convert to lowercase and map to the corresponding character in key
         return tolower(key[c - 'a']);
     }
     else
     {
+        // If not a letter, return character unchanged
         return c;
     }
 }
