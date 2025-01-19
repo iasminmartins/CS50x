@@ -10,7 +10,7 @@ import datetime
 # Configure application
 app = Flask(__name__)
 
-# Custom filter
+# Custom filter for currency format
 app.jinja_env.filters["usd"] = usd
 
 # Configure session to use filesystem (instead of signed cookies)
@@ -24,7 +24,7 @@ db = SQL("sqlite:///finance.db")
 
 @app.after_request
 def after_request(response):
-    """Ensure responses aren't cached"""
+    """Disable caching for responses"""
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     response.headers["Expires"] = 0
     response.headers["Pragma"] = "no-cache"
@@ -34,7 +34,7 @@ def after_request(response):
 @app.route("/")
 @login_required
 def index():
-    """Show portfolio of stocks"""
+    """Display user's stock portfolio"""
 
     # Get the current user's cash balance
     user_id = session["user_id"]
