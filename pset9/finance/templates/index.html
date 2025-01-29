@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Portfolio
+{% endblock %}
+
+{% block main %}
+    <h2>Your Portfolio</h2>
+
+    <!-- Display available cash balance -->
+    <h4>Cash: {{ cash  | usd }}</h4>
+
+    <!-- Table to display stock holdings -->
+    <table class="table">
+        <thead>
+            <tr>
+                <!-- Table headers for stock details -->
+                <th>Stock Symbol</th>
+                <th>Shares</th>
+                <th>Price</th>
+                <th>Total Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Loop through each stock and display its details -->
+            {% for stock in stock_data %}
+                <tr>
+                    <td>{{ stock.symbol }}</td>
+                    <td>{{ stock.shares }}</td>
+                    <!-- Display price and total value in USD format -->
+                    <td>{{ stock.price | usd }}</td>
+                    <td>{{ stock.total_value | usd }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Display the grand total value of the portfolio -->
+    <h4>Grand Total: {{ grand_total | usd }}</h4>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Transaction History
+{% endblock %}
+
+{% block main %}
+    <h2>Transaction History</h2>
+
+    {% if transactions %}
+        <!-- Table to display transaction history -->
+        <table>
+            <thead>
+                <tr>
+                    <!-- Table headers for transaction details -->
+                    <th>Symbol</th>
+                    <th>Transaction</th>
+                    <th>Price</th>
+                    <th>Date & Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Loop through each transaction and display its details -->
+                {% for transaction in transactions %}
+                    <tr>
+                        <td>{{ transaction.symbol }}</td>
+                        <td>
+                            <!-- Display shares bought or sold -->
+                            {% if transaction.shares > 0 %}
+                                +{{ transaction.shares }}
+                            {% else %}
+                                {{ transaction.shares }}
+                            {% endif %}
+                        </td>
+                        <!-- Display price in USD format -->
+                        <td>${{ transaction.price | usd }}</td>
+                        <td>{{ transaction.transaction_date }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <!-- Message displayed if there are no transactions -->
+        <p>You have no transaction history yet.</p>
+    {% endif %}
+{% endblock %}

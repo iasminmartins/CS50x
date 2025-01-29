@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Sell Stocks
+{% endblock %}
+
+{% block main %}
+    <h2>Sell Stocks</h2>
+
+    {% if stocks %}
+        <!-- Form for selling stocks, only visible if stocks are available -->
+        <form action="/sell" method="POST">
+            <!-- Dropdown menu for selecting the stock to sell -->
+            <div>
+                <label for="symbol">Select a stock to sell:</label>
+                <select name="symbol" id="symbol" required>
+                    <option value="">Select stock</option>
+                    <!-- Loop through available stocks to display them in the dropdown -->
+                    {% for stock in stocks %}
+                        <option value="{{ stock.symbol }}">{{ stock.symbol }} ({{ stock.total_shares }} shares)</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Input for entering the number of shares to sell -->
+            <div>
+                <label for="shares">Number of shares to sell:</label>
+                <input type="number" name="shares" id="shares" placeholder="Enter number of shares" min="1" required>
+            </div>
+
+            <!-- Submit button for the form -->
+            <button type="submit">Sell</button>
+        </form>
+    {% else %}
+        <!-- Message displayed when no stocks are available to sell -->
+        <p>No stocks available to sell.</p>
+    {% endif %}
+{% endblock %}

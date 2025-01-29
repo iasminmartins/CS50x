@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Quote a Stock
+{% endblock %}
+
+{% block main %}
+    <!-- Main Section: Stock Quote Input -->
+    <h2>Enter a Stock Symbol</h2>
+    <form action="/quote" method="post">
+        <!-- Input Field for Stock Symbol -->
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="symbol" placeholder="Symbol" type="text">
+        </div>
+        <!-- Submit Button to Get Quote -->
+        <button class="btn btn-primary" type="submit">Get Quote</button>
+    </form>
+{% endblock %}
