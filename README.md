@@ -38,7 +38,7 @@ Below are links to each week and its respective problem set:
 
 ### Final Project
 
-**Water Reminder Chrome Extension**
+**[Water Reminder Chrome Extension](https://github.com/iasminmartins/Water-Reminder-Extension.git)**
 
 For my final project, I developed a Chrome extension designed to help users stay hydrated throughout the day. Key features include:
 - Personalized hydration goals and reminder intervals
